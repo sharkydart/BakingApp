@@ -35,6 +35,20 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
+ * dTODO 1: connect to url - "go.udacity.com/android-baking-app-json" to get main set of data, using code from Popular Movies v2
+
+ * dTODO 2: make fragments display basic Recipe info
+
+ * TODO 3: use ExoPlayer/MediaPlayer from Classical Music Quiz to load/control video
+
+ * TODO 4: create a widget
+
+ * TODO 5: use a 3rd party to do something
+ *
+ * TODO 6:
+ */
+
+/**
  * An activity representing a list of Recipes. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,

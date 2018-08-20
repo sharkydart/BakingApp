@@ -30,6 +30,19 @@ public class Recipe implements Parcelable {
         return "";
     }
 
+    public String getStepsDump(){
+        if(theSteps != null && theSteps.size() > 0){
+            StringBuilder tempStr = new StringBuilder();
+            for (Step thing:theSteps){
+                tempStr.append(thing.getInfo());
+                tempStr.append('\n');
+                tempStr.append('\n');
+            }
+            return tempStr.toString();
+        }
+        return "";
+    }
+
     //getters and setters
     public int getTheID() {
         return theID;
@@ -109,6 +122,7 @@ public class Recipe implements Parcelable {
                     Step tStep = new Step(curStep);
                     stepsList.add(tStep);
                 }
+                this.setTheSteps(stepsList);
 
                 this.theServings = jsonRecipeObj.getInt("servings");
                 this.theImage = jsonRecipeObj.getString("image");

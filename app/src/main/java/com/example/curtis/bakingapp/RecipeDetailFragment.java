@@ -39,9 +39,6 @@ public class RecipeDetailFragment extends Fragment {
 
         if(getArguments() != null) {
             if (getArguments().containsKey(ARG_ITEM_ID)) {
-                // Load the dummy content specified by the fragment
-                // arguments. In a real-world scenario, use a Loader
-                // to load content from a content provider.
                 mItem = getArguments().getParcelable(ARG_ITEM_ID);
 
                 Activity activity = this.getActivity();
@@ -61,6 +58,7 @@ public class RecipeDetailFragment extends Fragment {
 
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mItem.getIngredientsDump());
+            ((TextView) rootView.findViewById(R.id.recipe_detail)).append(mItem.getStepsDump());
         }
 
         return rootView;
