@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.curtis.bakingapp.model.Recipe;
+import com.example.curtis.bakingapp.recyclerviewstuff.RecipesAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,7 +69,7 @@ public class RecipeListActivity extends AppCompatActivity {
     private String mSPrefJSON;
     private ArrayList<Recipe> mRecipes;
     private RecyclerView mTheRecyclerView;
-    private SimpleItemRecyclerViewAdapter mSimpRVAdapter;
+    private RecipesAdapter mRecipesAdapter;
     public static final String MYPREFS = "MyPreferences";
     public static final String BAKING_JSON = "baking json feed";
     public static final String RECIPES_AL = "arraylist of parsed recipes";
@@ -88,7 +89,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
 //        if(savedInstanceState != null && savedInstanceState.containsKey(RECIPES_AL)) {
 //            mRecipes = savedInstanceState.getParcelableArrayList(RECIPES_AL);
-//            mSimpRVAdapter.notifyDataSetChanged();
+//            mRecipesAdapter.notifyDataSetChanged();
 //        }
 //        else
             loadRecipeData();
@@ -120,77 +121,8 @@ public class RecipeListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mSimpRVAdapter = new SimpleItemRecyclerViewAdapter(this, mRecipes, mTwoPane);
-        recyclerView.setAdapter(mSimpRVAdapter);
-    }
-
-    public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-
-        private final RecipeListActivity mParentActivity;
-        private final ArrayList<Recipe> mRecipesRV;
-        private final boolean mTwoPane;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Recipe theRecipe = (Recipe) view.getTag();
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, theRecipe);
-                    RecipeDetailFragment fragment = new RecipeDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.recipe_detail_container, fragment)
-                            .commit();
-                } else {
-                    Log.d("fart","ingredients dump: " + theRecipe.getIngredientsDump());
-                    Log.d("fart","steps dump: " + theRecipe.getStepsDump());
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailFragment.THE_RECIPE_ID, theRecipe);
-                    context.startActivity(intent);
-                }
-            }
-        };
-
-        SimpleItemRecyclerViewAdapter(RecipeListActivity parent, ArrayList<Recipe> items, boolean twoPane) {
-            mRecipesRV = items;
-            mParentActivity = parent;
-            mTwoPane = twoPane;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recipe_list_content, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mRecipesRV.get(position).getTheName());
-            String contentView = "Ingredients: " + mRecipesRV.get(position).getTheIngredients().size() + " Serves: " + mRecipesRV.get(position).getTheServings();
-            holder.mContentView.setText(contentView);
-
-            holder.itemView.setTag(mRecipesRV.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mRecipesRV.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mContentView;
-
-            ViewHolder(View view) {
-                super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.content);
-            }
-        }
+        mRecipesAdapter = new RecipesAdapter(this, mRecipes, mTwoPane);
+        recyclerView.setAdapter(mRecipesAdapter);
     }
 
     private void loadRecipeData() {
@@ -275,7 +207,7 @@ public class RecipeListActivity extends AppCompatActivity {
                     }
 
                     //update adapter
-                    mSimpRVAdapter.notifyDataSetChanged();
+                    mRecipesAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(RecipeListActivity.this, "Data Issue", Toast.LENGTH_LONG).show();
