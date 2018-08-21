@@ -2,13 +2,17 @@ package com.example.curtis.bakingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+
+import com.example.curtis.bakingapp.model.Recipe;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -17,6 +21,8 @@ import android.view.MenuItem;
  * in a {@link RecipeListActivity}.
  */
 public class RecipeDetailActivity extends AppCompatActivity {
+
+    private Recipe mTheRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +60,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
+//            arguments.putString(RecipeDetailFragment.THE_RECIPE_ID, getIntent().getStringExtra(RecipeDetailFragment.THE_RECIPE_ID));
+            mTheRecipe = getIntent().getParcelableExtra(RecipeDetailFragment.THE_RECIPE_ID);
+            arguments.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, mTheRecipe);
 
             RecipeDetailFragment fragment = new RecipeDetailFragment();
             fragment.setArguments(arguments);
@@ -63,6 +71,17 @@ public class RecipeDetailActivity extends AppCompatActivity {
                     .add(R.id.recipe_detail_container, fragment)
                     .commit();
         }
+        else{
+            mTheRecipe = savedInstanceState.getParcelable(RecipeDetailFragment.THE_RECIPE_ID);
+            CollapsingToolbarLayout temp = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+            temp.setTitle(mTheRecipe.getTheName());
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, mTheRecipe);
     }
 
     @Override

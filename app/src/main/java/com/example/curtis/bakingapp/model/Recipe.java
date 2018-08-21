@@ -1,4 +1,4 @@
-package com.example.curtis.bakingapp.Model;
+package com.example.curtis.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -137,10 +137,10 @@ public class Recipe implements Parcelable {
         this.theID = in.readInt();
         this.theName = in.readString();
         ArrayList<Ingredient> ing_temp = new ArrayList<>();
-        in.readList(ing_temp, ElementType.class.getClassLoader());
+        in.readList(ing_temp, getClass().getClassLoader());
         this.setTheIngredients(ing_temp);
         ArrayList<Step> stp_temp = new ArrayList<>();
-        in.readList(stp_temp, ElementType.class.getClassLoader());
+        in.readList(stp_temp, getClass().getClassLoader());
         this.setTheSteps(stp_temp);
         this.theServings = in.readInt();
         this.theImage = in.readString();

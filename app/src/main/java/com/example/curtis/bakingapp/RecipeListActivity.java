@@ -2,6 +2,7 @@ package com.example.curtis.bakingapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -13,13 +14,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.curtis.bakingapp.Model.Recipe;
+import com.example.curtis.bakingapp.model.Recipe;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,15 +65,33 @@ public class RecipeListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+    private String mSPrefJSON;
     private ArrayList<Recipe> mRecipes;
+    private RecyclerView mTheRecyclerView;
     private SimpleItemRecyclerViewAdapter mSimpRVAdapter;
+    public static final String MYPREFS = "MyPreferences";
+    public static final String BAKING_JSON = "baking json feed";
+    public static final String RECIPES_AL = "arraylist of parsed recipes";
+    SharedPreferences sharedPreferences;
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        //save the items that are currently in the adapter
+        state.putParcelableArrayList(RECIPES_AL, mRecipes);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
 
-        loadRecipeData();
+//        if(savedInstanceState != null && savedInstanceState.containsKey(RECIPES_AL)) {
+//            mRecipes = savedInstanceState.getParcelableArrayList(RECIPES_AL);
+//            mSimpRVAdapter.notifyDataSetChanged();
+//        }
+//        else
+            loadRecipeData();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,13 +114,13 @@ public class RecipeListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        View recyclerView = findViewById(R.id.recipe_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        mTheRecyclerView = findViewById(R.id.recipe_list);
+        assert mTheRecyclerView != null;
+        setupRecyclerView(mTheRecyclerView);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mSimpRVAdapter = new SimpleItemRecyclerViewAdapter(this, mRecipes /*DummyContent.ITEMS*/, mTwoPane);
+        mSimpRVAdapter = new SimpleItemRecyclerViewAdapter(this, mRecipes, mTwoPane);
         recyclerView.setAdapter(mSimpRVAdapter);
     }
 
@@ -108,7 +128,7 @@ public class RecipeListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final RecipeListActivity mParentActivity;
-        private final List<Recipe> mRecipesRV;
+        private final ArrayList<Recipe> mRecipesRV;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
@@ -116,25 +136,24 @@ public class RecipeListActivity extends AppCompatActivity {
                 Recipe theRecipe = (Recipe) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putParcelable(RecipeDetailFragment.ARG_ITEM_ID, theRecipe);
+                    arguments.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, theRecipe);
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.recipe_detail_container, fragment)
                             .commit();
                 } else {
+                    Log.d("fart","ingredients dump: " + theRecipe.getIngredientsDump());
+                    Log.d("fart","steps dump: " + theRecipe.getStepsDump());
                     Context context = view.getContext();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, theRecipe);
-
+                    intent.putExtra(RecipeDetailFragment.THE_RECIPE_ID, theRecipe);
                     context.startActivity(intent);
                 }
             }
         };
 
-        SimpleItemRecyclerViewAdapter(RecipeListActivity parent,
-                                      List<Recipe> items,
-                                      boolean twoPane) {
+        SimpleItemRecyclerViewAdapter(RecipeListActivity parent, ArrayList<Recipe> items, boolean twoPane) {
             mRecipesRV = items;
             mParentActivity = parent;
             mTwoPane = twoPane;
@@ -175,8 +194,13 @@ public class RecipeListActivity extends AppCompatActivity {
     }
 
     private void loadRecipeData() {
+//        SharedPreferences.Editor spEditor = sharedPreferences.edit();
+        //TODO: provide a way to force refresh/"pull from network"
+        sharedPreferences = getSharedPreferences(MYPREFS, Context.MODE_PRIVATE);
+        mSPrefJSON = sharedPreferences.getString(BAKING_JSON, null);
+
         mRecipes = new ArrayList<>();
-        new FetchRecipesTask().execute();
+        new FetchRecipesTask().execute(mSPrefJSON);
     }
     public URL buildBakingUrl() {
         String baseurl = this.getString(R.string.recipes_url);
@@ -210,6 +234,8 @@ public class RecipeListActivity extends AppCompatActivity {
     public class FetchRecipesTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
+            if (params[0] != null)
+                return params[0];
             try {
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 if(connectivityManager != null) {
@@ -233,6 +259,11 @@ public class RecipeListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String theData) {
             if (theData != null) {
+//                if(mSPrefJSON == null){
+//                    SharedPreferences.Editor editor = getSharedPreferences(MYPREFS, MODE_PRIVATE).edit();
+//                    editor.putString(BAKING_JSON, theData);
+//                    editor.apply();
+//                }
                 try {
                     //parse theData json
                     mRecipes.clear();

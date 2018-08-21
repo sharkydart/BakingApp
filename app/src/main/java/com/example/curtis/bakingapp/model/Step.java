@@ -1,4 +1,4 @@
-package com.example.curtis.bakingapp.Model;
+package com.example.curtis.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

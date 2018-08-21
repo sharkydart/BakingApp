@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.curtis.bakingapp.Model.Recipe;
+import com.example.curtis.bakingapp.model.Recipe;
 
 /**
  * A fragment representing a single Recipe detail screen.
@@ -22,7 +23,7 @@ public class RecipeDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String THE_RECIPE_ID = "item_id";
 
     private Recipe mItem;
 
@@ -38,8 +39,8 @@ public class RecipeDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if(getArguments() != null) {
-            if (getArguments().containsKey(ARG_ITEM_ID)) {
-                mItem = getArguments().getParcelable(ARG_ITEM_ID);
+            if (getArguments().containsKey(THE_RECIPE_ID)) {
+                mItem = getArguments().getParcelable(THE_RECIPE_ID);
 
                 Activity activity = this.getActivity();
                 if(activity != null) {
