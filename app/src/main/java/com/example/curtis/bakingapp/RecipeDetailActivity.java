@@ -2,17 +2,22 @@ package com.example.curtis.bakingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.curtis.bakingapp.model.Recipe;
+import com.example.curtis.bakingapp.model.Step;
+import com.example.curtis.bakingapp.StepFragment.OnListFragmentInteractionListener;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -20,9 +25,13 @@ import com.example.curtis.bakingapp.model.Recipe;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity implements StepFragment.OnListFragmentInteractionListener{
 
     private Recipe mTheRecipe;
+    private RecyclerView mTheRecyclerView;
+    private StepsAdapter mStepsAdapter;
+    private OnListFragmentInteractionListener mListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +85,15 @@ public class RecipeDetailActivity extends AppCompatActivity {
             CollapsingToolbarLayout temp = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
             temp.setTitle(mTheRecipe.getTheName());
         }
+
+        mTheRecyclerView = findViewById(R.id.rvStep_list);
+        assert mTheRecyclerView != null;
+        setupRecyclerView(mTheRecyclerView);
+    }
+
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        mStepsAdapter = new StepsAdapter(mTheRecipe.getTheSteps(), mListener);
+        recyclerView.setAdapter(mStepsAdapter);
     }
 
     @Override
@@ -98,5 +116,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onListFragmentInteraction(View v, Step clickedStep) {
+        if(clickedStep != null) {
+            Log.d("fart", "fragment interacted with: step " + clickedStep.getTheID() + "\n" + clickedStep.getTheShortDescription());
+            //TODO: control video playback in some fashion?
+            //TODO: possibly need to send the view obj as well - something to get the xpVideo, etc.
+            Log.d("fart", "Video URL: " + clickedStep.getTheVideoURL());
+
+            if (v != null) {
+                TextView temp = (TextView) v.findViewById(R.id.tvShortDescription);
+                temp.setText("BARF");
+            }
+        }
     }
 }
