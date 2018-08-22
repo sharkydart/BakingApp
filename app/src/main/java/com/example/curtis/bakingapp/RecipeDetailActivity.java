@@ -38,6 +38,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
 
+        //setup for fancy look/feel
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
@@ -69,7 +70,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-//            arguments.putString(RecipeDetailFragment.THE_RECIPE_ID, getIntent().getStringExtra(RecipeDetailFragment.THE_RECIPE_ID));
             mTheRecipe = getIntent().getParcelableExtra(RecipeDetailFragment.THE_RECIPE_ID);
             arguments.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, mTheRecipe);
 
@@ -120,6 +120,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
 
     @Override
     public void onListFragmentInteraction(View v, Step clickedStep) {
+        Log.d("fart", "clicked something");
         if(clickedStep != null) {
             Log.d("fart", "fragment interacted with: step " + clickedStep.getTheID() + "\n" + clickedStep.getTheShortDescription());
             //TODO: control video playback in some fashion?
