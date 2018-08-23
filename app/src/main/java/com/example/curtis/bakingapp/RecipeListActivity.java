@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -70,10 +71,11 @@ public class RecipeListActivity extends AppCompatActivity {
     private ArrayList<Recipe> mRecipes;
     private RecyclerView mTheRecyclerView;
     private RecipesAdapter mRecipesAdapter;
+
     public static final String MYPREFS = "MyPreferences";
     public static final String BAKING_JSON = "baking json feed";
     public static final String RECIPES_AL = "arraylist of parsed recipes";
-    SharedPreferences sharedPreferences;
+    SharedPreferences mSharedPreferences;
 
     @Override
     protected void onSaveInstanceState(Bundle state) {
@@ -86,6 +88,7 @@ public class RecipeListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
+
 
 //        if(savedInstanceState != null && savedInstanceState.containsKey(RECIPES_AL)) {
 //            mRecipes = savedInstanceState.getParcelableArrayList(RECIPES_AL);
@@ -128,8 +131,10 @@ public class RecipeListActivity extends AppCompatActivity {
     private void loadRecipeData() {
 //        SharedPreferences.Editor spEditor = sharedPreferences.edit();
         //TODO: provide a way to force refresh/"pull from network"
-        sharedPreferences = getSharedPreferences(MYPREFS, Context.MODE_PRIVATE);
-        mSPrefJSON = sharedPreferences.getString(BAKING_JSON, null);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSPrefJSON = mSharedPreferences.getString(BAKING_JSON, null);
+        if(mSPrefJSON != null)
+            Log.d("fart", mSPrefJSON);
 
         mRecipes = new ArrayList<>();
         new FetchRecipesTask().execute(mSPrefJSON);
@@ -191,11 +196,11 @@ public class RecipeListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String theData) {
             if (theData != null) {
-//                if(mSPrefJSON == null){
-//                    SharedPreferences.Editor editor = getSharedPreferences(MYPREFS, MODE_PRIVATE).edit();
-//                    editor.putString(BAKING_JSON, theData);
-//                    editor.apply();
-//                }
+                if(mSPrefJSON == null){
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putString(BAKING_JSON, theData); //trying to save theData to the shared preferences
+                    editor.apply();
+                }
                 try {
                     //parse theData json
                     mRecipes.clear();
