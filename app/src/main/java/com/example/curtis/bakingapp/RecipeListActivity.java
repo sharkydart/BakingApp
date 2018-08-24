@@ -133,8 +133,6 @@ public class RecipeListActivity extends AppCompatActivity {
         //TODO: provide a way to force refresh/"pull from network"
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mSPrefJSON = mSharedPreferences.getString(BAKING_JSON, null);
-        if(mSPrefJSON != null)
-            Log.d("fart", mSPrefJSON);
 
         mRecipes = new ArrayList<>();
         new FetchRecipesTask().execute(mSPrefJSON);
