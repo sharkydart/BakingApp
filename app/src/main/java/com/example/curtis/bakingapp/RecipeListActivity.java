@@ -68,7 +68,7 @@ public class RecipeListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     private String mSPrefJSON;
-    private ArrayList<Recipe> mRecipes;
+    private ArrayList<Recipe> mRecipes = new ArrayList<>();
     private RecyclerView mTheRecyclerView;
     private RecipesAdapter mRecipesAdapter;
 
@@ -95,7 +95,7 @@ public class RecipeListActivity extends AppCompatActivity {
 //            mRecipesAdapter.notifyDataSetChanged();
 //        }
 //        else
-            loadRecipeData();
+        loadRecipeData();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,8 +105,13 @@ public class RecipeListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, "Click 'Update' to refresh the recipe list.", Snackbar.LENGTH_LONG)
+                        .setAction("Update", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                new FetchRecipesTask().execute();
+                            }
+                        }).show();
             }
         });
 
@@ -134,7 +139,7 @@ public class RecipeListActivity extends AppCompatActivity {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mSPrefJSON = mSharedPreferences.getString(BAKING_JSON, null);
 
-        mRecipes = new ArrayList<>();
+//        mRecipes = new ArrayList<>();
         new FetchRecipesTask().execute(mSPrefJSON);
     }
     public URL buildBakingUrl() {
@@ -169,8 +174,9 @@ public class RecipeListActivity extends AppCompatActivity {
     public class FetchRecipesTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            if (params[0] != null)
-                return params[0];
+            if (params != null && params.length != 0)
+                if(params[0] != null)
+                    return params[0];
             try {
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 if(connectivityManager != null) {
@@ -211,6 +217,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
                     //update adapter
                     mRecipesAdapter.notifyDataSetChanged();
+                    Toast.makeText(RecipeListActivity.this, "Refreshed!", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(RecipeListActivity.this, "Data Issue", Toast.LENGTH_LONG).show();

@@ -40,12 +40,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        android:background="@color/colorBakingDefault"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <FrameLayout
         android:id="@+id/stepFragmentFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorBabyYellow"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <include layout="@layout/fragment_step_list" />
     </FrameLayout>
@@ -57,7 +59,7 @@
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/recipe_detail_container"
-        app:layout_anchorGravity="top|end"
-        app:srcCompat="@android:drawable/stat_notify_chat" />
+        app:layout_anchorGravity="top|end"/>
+    <!--app:srcCompat="@drawable/pie_slice01"-->
 
 </android.support.design.widget.CoordinatorLayout>

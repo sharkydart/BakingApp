@@ -2,5 +2,12 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorBakingDefault">#bf8060</color>
+    <color name="colorListCircle">#FF4081</color>
+    <color name="colorDetailCircle">#ffd000</color>
+    <color name="colorBabyBlue">#58d0ff</color>
+    <color name="colorBabyGreen">#77ffab</color>
+    <color name="colorBabyRed">#ff4450</color>
+    <color name="colorBabyYellow">#ffee67</color>
+    <color name="colorBabyOrange">#ffb428</color>
 </resources>

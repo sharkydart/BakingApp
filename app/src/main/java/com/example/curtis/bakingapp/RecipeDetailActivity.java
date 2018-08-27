@@ -32,7 +32,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
     private StepsAdapter mStepsAdapter;
     private OnListFragmentInteractionListener mListener;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
