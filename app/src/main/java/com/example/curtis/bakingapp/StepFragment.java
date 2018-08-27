@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.curtis.bakingapp.model.Step;
+import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
 
 import java.util.ArrayList;
 

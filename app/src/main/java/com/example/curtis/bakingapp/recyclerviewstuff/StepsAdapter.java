@@ -1,4 +1,4 @@
-package com.example.curtis.bakingapp;
+package com.example.curtis.bakingapp.recyclerviewstuff;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.curtis.bakingapp.R;
 import com.example.curtis.bakingapp.StepFragment.OnListFragmentInteractionListener;
 import com.example.curtis.bakingapp.model.Step;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;

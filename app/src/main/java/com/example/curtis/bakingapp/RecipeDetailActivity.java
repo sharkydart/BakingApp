@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.curtis.bakingapp.model.Recipe;
 import com.example.curtis.bakingapp.model.Step;
 import com.example.curtis.bakingapp.StepFragment.OnListFragmentInteractionListener;
+import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
 
 /**
  * An activity representing a single Recipe detail screen. This
