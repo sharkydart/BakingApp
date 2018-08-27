@@ -92,6 +92,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         mStepsAdapter = new StepsAdapter(mTheRecipe.getTheSteps(), mListener);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(mStepsAdapter);
     }
 

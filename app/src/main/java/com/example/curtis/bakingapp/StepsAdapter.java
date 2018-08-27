@@ -62,9 +62,10 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
             Picasso.get()
                     .load(imgpath)
                     .into(theImgView);
+            theImgView.setVisibility(View.VISIBLE);
         }
         else{
-            theImgView.setVisibility(View.INVISIBLE);
+            theImgView.setVisibility(View.GONE);
         }
     }
 
