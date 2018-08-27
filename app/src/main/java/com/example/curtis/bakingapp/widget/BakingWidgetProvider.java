@@ -47,6 +47,7 @@ public class BakingWidgetProvider extends AppWidgetProvider {
                         for (int widgetId : appWidgetIds) {
                             aWM.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_list);
                         }
+                        remoteView.setImageViewResource(R.id.widget_img_launcher, R.drawable.pie_slice01);
                         aWM.updateAppWidget(appWidgetIds, remoteView);
                     } else {
                         Toast.makeText(theContext, "no extra or arraylist NULL", Toast.LENGTH_LONG).show();
@@ -61,6 +62,7 @@ public class BakingWidgetProvider extends AppWidgetProvider {
                     for (int widgetId : appWidgetIds) {
                         aWM.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_list);
                     }
+                    remoteView.setImageViewResource(R.id.widget_img_launcher, R.drawable.pie);
                     aWM.updateAppWidget(appWidgetIds, remoteView);
                 }
             }
@@ -101,33 +103,6 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
-
-//    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-//
-//        // Construct the RemoteViews object
-//        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget_provider_layout);
-//
-//        Intent raIntent = new Intent(context, WidgetRVService.class);
-//        raIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);    //don't know why
-//        raIntent.setData(Uri.parse(raIntent.toUri(Intent.URI_INTENT_SCHEME)));  //don't know why
-//        views.setRemoteAdapter(R.id.widget_list, raIntent);
-//
-//        //set up the click for the pie image to open the app
-//        final Intent appIntent = new Intent(context, RecipeListActivity.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, appIntent, 0);
-//        views.setOnClickPendingIntent(R.id.widget_img_launcher, pendingIntent);
-//
-//        //set up the Intent & PendingIntent for the listview's fillInIntents to work
-//        final Intent onItemClickIntent = new Intent(context, BakingWidgetProvider.class);
-//        onItemClickIntent.setAction(ACTION_TOAST);
-//        onItemClickIntent.setData(Uri.parse(onItemClickIntent.toUri(Intent.URI_INTENT_SCHEME)));
-//
-//        final PendingIntent onClickPendingIntent = PendingIntent.getBroadcast(context, 0, onItemClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        views.setPendingIntentTemplate(R.id.widget_list, onClickPendingIntent);
-//
-//        // Instruct the widget manager to update the widget
-//        appWidgetManager.updateAppWidget(appWidgetId, views);
-//    }
 
     @Override
     public void onEnabled(Context context) {
