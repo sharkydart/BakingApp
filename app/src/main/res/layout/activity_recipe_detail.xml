@@ -34,23 +34,57 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
+    <!--<com.google.android.exoplayer2.ui.PlayerView-->
+        <!--android:id="@+id/xpVideo"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:visibility="visible"-->
+        <!--android:background="@color/colorBabyBlue"-->
+        <!--/>-->
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/recipe_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        android:background="@color/colorBakingDefault"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:background="@color/colorBabyBlue"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    </android.support.v4.widget.NestedScrollView>
 
-    <FrameLayout
-        android:id="@+id/stepFragmentFrameLayout"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBabyYellow"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <include layout="@layout/fragment_step_list" />
-    </FrameLayout>
+        <LinearLayout
+            android:id="@+id/llRecipeDetailContents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <android.support.design.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="6dp"
+                app:cardBackgroundColor="@color/colorBabyBlue"
+                >
+                <TextView
+                    android:id="@+id/tvIngredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    />
+            </android.support.design.card.MaterialCardView>
+            <FrameLayout
+                android:id="@+id/stepFragmentFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorBabyYellow">
+                <include layout="@layout/fragment_step_list" />
+            </FrameLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -59,7 +93,8 @@
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/recipe_detail_container"
-        app:layout_anchorGravity="top|end"/>
+        app:layout_anchorGravity="top|end"
+        android:visibility="gone"/>
     <!--app:srcCompat="@drawable/pie_slice01"-->
 
 </android.support.design.widget.CoordinatorLayout>

@@ -3,11 +3,14 @@ package com.example.curtis.bakingapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.card.MaterialCardView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +22,7 @@ import com.example.curtis.bakingapp.model.Recipe;
 import com.example.curtis.bakingapp.model.Step;
 import com.example.curtis.bakingapp.StepFragment.OnListFragmentInteractionListener;
 import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
+import com.google.android.exoplayer2.ui.PlayerView;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -39,8 +43,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
         setContentView(R.layout.activity_recipe_detail);
 
         //setup for fancy look/feel
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar theToolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        setSupportActionBar(theToolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -82,10 +86,14 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
         }
         else{
             mTheRecipe = savedInstanceState.getParcelable(RecipeDetailFragment.THE_RECIPE_ID);
-            CollapsingToolbarLayout temp = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-            temp.setTitle(mTheRecipe.getTheName());
+            CollapsingToolbarLayout tempTL = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+            tempTL.setTitle(mTheRecipe.getTheName());
         }
 
+        TextView tempIngr = findViewById(R.id.tvIngredients);
+        tempIngr.setText(mTheRecipe.getIngredientsDump());
+        int height = getResources().getInteger(R.integer.ingredient_height);
+        tempIngr.setHeight(height * mTheRecipe.getTheIngredients().size());
         mTheRecyclerView = findViewById(R.id.rvStep_list);
         assert mTheRecyclerView != null;
         setupRecyclerView(mTheRecyclerView);
