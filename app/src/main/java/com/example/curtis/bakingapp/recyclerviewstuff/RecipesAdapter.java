@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.curtis.bakingapp.R;
 import com.example.curtis.bakingapp.RecipeDetailActivity;
@@ -29,6 +30,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
             if (mTwoPane) {
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, theRecipe);
+                arguments.putBoolean(RecipeListActivity.TWO_PANE, true);
                 RecipeDetailFragment fragment = new RecipeDetailFragment();
                 fragment.setArguments(arguments);
                 mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -38,12 +40,13 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
                 Context context = view.getContext();
                 Intent intent = new Intent(context, RecipeDetailActivity.class);
                 intent.putExtra(RecipeDetailFragment.THE_RECIPE_ID, theRecipe);
+                intent.putExtra(RecipeListActivity.TWO_PANE, mTwoPane);
                 context.startActivity(intent);
             }
         }
     };
 
-    public RecipesAdapter(RecipeListActivity parent, ArrayList<Recipe> items, boolean twoPane) {
+    public RecipesAdapter(RecipeListActivity parent, boolean twoPane, ArrayList<Recipe> items) {
         mRecipesRV = items;
         mParentActivity = parent;
         mTwoPane = twoPane;

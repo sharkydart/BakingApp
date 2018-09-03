@@ -3,14 +3,11 @@ package com.example.curtis.bakingapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.card.MaterialCardView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
@@ -20,9 +17,8 @@ import android.widget.TextView;
 
 import com.example.curtis.bakingapp.model.Recipe;
 import com.example.curtis.bakingapp.model.Step;
-import com.example.curtis.bakingapp.StepFragment.OnListFragmentInteractionListener;
+import com.example.curtis.bakingapp.StepsFragment.OnListFragmentInteractionListener;
 import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
-import com.google.android.exoplayer2.ui.PlayerView;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -30,8 +26,9 @@ import com.google.android.exoplayer2.ui.PlayerView;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity implements StepFragment.OnListFragmentInteractionListener{
+public class RecipeDetailActivity extends AppCompatActivity implements StepsFragment.OnListFragmentInteractionListener{
 
+    private boolean mTwoPane;
     private Recipe mTheRecipe;
     private RecyclerView mTheRecyclerView;
     private StepsAdapter mStepsAdapter;
@@ -76,6 +73,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
             Bundle arguments = new Bundle();
             mTheRecipe = getIntent().getParcelableExtra(RecipeDetailFragment.THE_RECIPE_ID);
             arguments.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, mTheRecipe);
+            mTwoPane = getIntent().getBooleanExtra(RecipeListActivity.TWO_PANE, false);
+            arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
 
             RecipeDetailFragment fragment = new RecipeDetailFragment();
             fragment.setArguments(arguments);
@@ -85,8 +84,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
                     .commit();
         }
         else{
+            mTwoPane = savedInstanceState.getBoolean(RecipeListActivity.TWO_PANE);
             mTheRecipe = savedInstanceState.getParcelable(RecipeDetailFragment.THE_RECIPE_ID);
-            CollapsingToolbarLayout tempTL = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+            CollapsingToolbarLayout tempTL = findViewById(R.id.toolbar_layout);
             tempTL.setTitle(mTheRecipe.getTheName());
         }
 
@@ -100,7 +100,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepFragm
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mStepsAdapter = new StepsAdapter(mTheRecipe.getTheSteps(), mListener);
+        mStepsAdapter = new StepsAdapter(this, mTwoPane, mTheRecipe.getTheSteps(), mListener);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(mStepsAdapter);
     }

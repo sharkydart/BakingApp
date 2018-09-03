@@ -75,6 +75,7 @@ public class RecipeListActivity extends AppCompatActivity {
     public static final String MYPREFS = "MyPreferences";
     public static final String BAKING_JSON = "baking json feed";
     public static final String RECIPES_AL = "arraylist of parsed recipes";
+    public static final String TWO_PANE = "recipe_detail_container exists";
     SharedPreferences mSharedPreferences;
 
     @Override
@@ -129,7 +130,7 @@ public class RecipeListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mRecipesAdapter = new RecipesAdapter(this, mRecipes, mTwoPane);
+        mRecipesAdapter = new RecipesAdapter(this, mTwoPane, mRecipes);
         recyclerView.setAdapter(mRecipesAdapter);
     }
 

@@ -9,5 +9,5 @@
     android:paddingTop="10dp"
     android:background="@color/colorBakingDefault"
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:context=".StepFragment"
+    tools:context=".StepsFragment"
     tools:listitem="@layout/fragment_step" />

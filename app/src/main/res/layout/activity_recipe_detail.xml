@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recipe_coordLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -44,15 +45,7 @@
         <!--/>-->
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/recipe_detail_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/colorBabyBlue"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </android.support.v4.widget.NestedScrollView>
-
-    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_theRecipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -92,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@+id/recipe_detail_container"
+        app:layout_anchor="@+id/nsv_theRecipe"
         app:layout_anchorGravity="top|end"
         android:visibility="gone"/>
     <!--app:srcCompat="@drawable/pie_slice01"-->

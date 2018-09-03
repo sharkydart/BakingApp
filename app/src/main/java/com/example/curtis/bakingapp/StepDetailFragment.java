@@ -12,15 +12,15 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StepDetail.OnFragmentInteractionListener} interface
+ * {@link StepDetailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link StepDetail#newInstance} factory method to
+ * Use the {@link StepDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StepDetail extends Fragment {
+public class StepDetailFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    public static final String STEP_DETAIL_ID = "com.example.curtis.bakingapp.step_detail";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
@@ -29,7 +29,7 @@ public class StepDetail extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public StepDetail() {
+    public StepDetailFragment() {
         // Required empty public constructor
     }
 
@@ -39,13 +39,12 @@ public class StepDetail extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment StepDetail.
+     * @return A new instance of fragment StepDetailFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static StepDetail newInstance(String param1, String param2) {
-        StepDetail fragment = new StepDetail();
+    public static StepDetailFragment newInstance(String param1, String param2) {
+        StepDetailFragment fragment = new StepDetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(STEP_DETAIL_ID, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -55,7 +54,7 @@ public class StepDetail extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getString(STEP_DETAIL_ID);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }

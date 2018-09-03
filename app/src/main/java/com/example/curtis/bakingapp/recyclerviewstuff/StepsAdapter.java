@@ -1,7 +1,7 @@
 package com.example.curtis.bakingapp.recyclerviewstuff;
 
-import android.content.Context;
-import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,27 +12,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.curtis.bakingapp.R;
-import com.example.curtis.bakingapp.StepFragment.OnListFragmentInteractionListener;
+import com.example.curtis.bakingapp.RecipeDetailActivity;
+import com.example.curtis.bakingapp.RecipeListActivity;
+import com.example.curtis.bakingapp.StepDetailFragment;
+import com.example.curtis.bakingapp.StepsFragment.OnListFragmentInteractionListener;
 import com.example.curtis.bakingapp.model.Step;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> {
 
+    private final AppCompatActivity mParentActivity;
     private final ArrayList<Step> mValues;
     private final OnListFragmentInteractionListener mListener;
     private final boolean mTwoPane;
@@ -42,17 +33,20 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         public void onClick(View view) {
             Step theStep = (Step)view.getTag();
             if (mTwoPane) {
-                getVideoInto(theStep.getTheVideoURL());
-//                Bundle arguments = new Bundle();
-//                arguments.putParcelable(StepDetailFragment.LOAD_STEP_ID, theStep);
-//                StepDetailFragment fragment = new StepDetailFragment();
-//                fragment.setArguments(arguments);
-//                mParentActivity.getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.step_detail_container, fragment)
-//                        .commit();
+                Toast.makeText(view.getContext(), "clicked a step - tablet", Toast.LENGTH_SHORT).show();
+//                getVideoInto(theStep.getTheVideoURL());
+                Bundle arguments = new Bundle();
+                arguments.putParcelable(StepDetailFragment.STEP_DETAIL_ID, theStep);
+                arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
+                StepDetailFragment fragment = new StepDetailFragment();
+                fragment.setArguments(arguments);
+                mParentActivity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.step_detail_container, fragment)
+                        .commit();
             } else {
-                //load video
-                getVideoInto(theStep.getTheVideoURL());
+                Toast.makeText(view.getContext(), "clicked a step - phone", Toast.LENGTH_SHORT).show();
+                  //load video
+//                getVideoInto(theStep.getTheVideoURL());
 //                Context context = view.getContext();
 //                Intent intent = new Intent(context, StepDetailActivity.class);
 //                intent.putExtra(StepDetailFragment.LOAD_STEP_ID, theStep);
@@ -61,10 +55,11 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         }
     };
 
-    public StepsAdapter(ArrayList<Step> items, OnListFragmentInteractionListener listener) {
+    public StepsAdapter(AppCompatActivity parent, boolean twoPane, ArrayList<Step> items, OnListFragmentInteractionListener listener) {
         mValues = items;
+        mParentActivity = parent;
         mListener = listener;
-        mTwoPane = false;
+        mTwoPane = twoPane;
     }
 
     @Override

@@ -15,16 +15,18 @@ import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
 
 import java.util.ArrayList;
 
-public class StepFragment extends Fragment {
+public class StepsFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     public static final String THE_STEP_ID = "step_id";
 
     private ArrayList<Step> mStepItems;
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     OnListFragmentInteractionListener mListener;
+    private boolean mTwoPane;
+    private RecipeDetailActivity mParentActivity;
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -44,13 +46,13 @@ public class StepFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public StepFragment() {
+    public StepsFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static StepFragment newInstance(int columnCount) {
-        StepFragment fragment = new StepFragment();
+    public static StepsFragment newInstance(int columnCount) {
+        StepsFragment fragment = new StepsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -64,6 +66,8 @@ public class StepFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             mStepItems = getArguments().getParcelable(THE_STEP_ID);
+            mTwoPane = getArguments().getBoolean(RecipeListActivity.TWO_PANE);
+            mParentActivity = (RecipeDetailActivity)getActivity().getParent();
         }
     }
 
@@ -80,7 +84,7 @@ public class StepFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new StepsAdapter(mStepItems, mListener));
+            recyclerView.setAdapter(new StepsAdapter(mParentActivity , mTwoPane, mStepItems, mListener));
         }
         return view;
     }
