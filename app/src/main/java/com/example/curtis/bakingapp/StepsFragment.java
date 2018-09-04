@@ -23,7 +23,7 @@ public class StepsFragment extends Fragment {
 
     private ArrayList<Step> mStepItems;
     private int mColumnCount = 1;
-    OnListFragmentInteractionListener mListener;
+//    OnListFragmentInteractionListener mListener;
     private boolean mTwoPane;
     private RecipeDetailActivity mParentActivity;
 
@@ -38,9 +38,9 @@ public class StepsFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(View v, Step item);
-    }
+//    public interface OnListFragmentInteractionListener {
+//        void onListFragmentInteraction(View v, Step item);
+//    }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -84,7 +84,7 @@ public class StepsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new StepsAdapter(mParentActivity , mTwoPane, mStepItems, mListener));
+            recyclerView.setAdapter(new StepsAdapter(mParentActivity , mTwoPane, mStepItems/*, mListener*/));
         }
         return view;
     }
@@ -93,18 +93,18 @@ public class StepsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+//        if (context instanceof OnListFragmentInteractionListener) {
+//            mListener = (OnListFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnListFragmentInteractionListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+//        mListener = null;
     }
 
 }

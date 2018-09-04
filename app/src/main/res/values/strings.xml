@@ -8,6 +8,9 @@
     <string name="add_widget">Add widget</string>
     <string name="placeholderDescription">Thumbnail</string>
 
+    <string name="btnNextStepText">Next Step</string>
+    <string name="btnPrevStepText">Previous Step</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_step_detail">StepDetailActivity</string>
     <string name="title_home">Home</string>

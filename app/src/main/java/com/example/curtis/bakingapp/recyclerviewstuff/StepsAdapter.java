@@ -1,5 +1,7 @@
 package com.example.curtis.bakingapp.recyclerviewstuff;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.curtis.bakingapp.R;
-import com.example.curtis.bakingapp.RecipeDetailActivity;
 import com.example.curtis.bakingapp.RecipeListActivity;
+import com.example.curtis.bakingapp.StepDetailActivity;
 import com.example.curtis.bakingapp.StepDetailFragment;
-import com.example.curtis.bakingapp.StepsFragment.OnListFragmentInteractionListener;
+import com.example.curtis.bakingapp.StepsFragment;
 import com.example.curtis.bakingapp.model.Step;
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +27,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
 
     private final AppCompatActivity mParentActivity;
     private final ArrayList<Step> mValues;
-    private final OnListFragmentInteractionListener mListener;
+//    private final OnListFragmentInteractionListener mListener;
     private final boolean mTwoPane;
 
     private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -36,29 +38,31 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
                 Toast.makeText(view.getContext(), "clicked a step - tablet", Toast.LENGTH_SHORT).show();
 //                getVideoInto(theStep.getTheVideoURL());
                 Bundle arguments = new Bundle();
-                arguments.putParcelable(StepDetailFragment.STEP_DETAIL_ID, theStep);
+                arguments.putParcelable(StepsFragment.THE_STEP_ID, theStep);
                 arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
                 StepDetailFragment fragment = new StepDetailFragment();
                 fragment.setArguments(arguments);
+                //TODO - ??? recipe_detail_container -> step_detail_container ???
+                //TODO - create a container for the left hand side and load the recipe details there?
                 mParentActivity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.step_detail_container, fragment)
+                        .replace(R.id.recipe_detail_container, fragment)
                         .commit();
             } else {
                 Toast.makeText(view.getContext(), "clicked a step - phone", Toast.LENGTH_SHORT).show();
                   //load video
-//                getVideoInto(theStep.getTheVideoURL());
-//                Context context = view.getContext();
-//                Intent intent = new Intent(context, StepDetailActivity.class);
-//                intent.putExtra(StepDetailFragment.LOAD_STEP_ID, theStep);
-//                context.startActivity(intent);
+                Context context = view.getContext();
+                Intent intent = new Intent(context, StepDetailActivity.class);
+                intent.putExtra(StepsFragment.THE_STEP_ID, theStep);
+                intent.putExtra(RecipeListActivity.TWO_PANE, false);
+                context.startActivity(intent);
             }
         }
     };
 
-    public StepsAdapter(AppCompatActivity parent, boolean twoPane, ArrayList<Step> items, OnListFragmentInteractionListener listener) {
+    public StepsAdapter(AppCompatActivity parent, boolean twoPane, ArrayList<Step> items/*, OnListFragmentInteractionListener listener*/) {
         mValues = items;
         mParentActivity = parent;
-        mListener = listener;
+//        mListener = listener;
         mTwoPane = twoPane;
     }
 
@@ -87,7 +91,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         theImgView.setScaleType(ImageView.ScaleType.FIT_START);
         theImgView.setAdjustViewBounds(true);
 
-        Log.d("fart", "imgpath:" + imgpath);
+//        Log.d("fart", "imgpath:" + imgpath);
 
         if(!imgpath.isEmpty()) {
             Picasso.get()

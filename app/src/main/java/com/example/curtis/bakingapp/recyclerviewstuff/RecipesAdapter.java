@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,19 +29,21 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         public void onClick(View view) {
             Recipe theRecipe = (Recipe) view.getTag();
             if (mTwoPane) {
+                Log.d("fart", "TABLET RECIPE CLICK");
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, theRecipe);
-                arguments.putBoolean(RecipeListActivity.TWO_PANE, true);
+                arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
                 RecipeDetailFragment fragment = new RecipeDetailFragment();
                 fragment.setArguments(arguments);
                 mParentActivity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.recipe_detail_container, fragment)
                         .commit();
             } else {
+                Log.d("fart", "PHONE RECIPE CLICK");
                 Context context = view.getContext();
                 Intent intent = new Intent(context, RecipeDetailActivity.class);
                 intent.putExtra(RecipeDetailFragment.THE_RECIPE_ID, theRecipe);
-                intent.putExtra(RecipeListActivity.TWO_PANE, mTwoPane);
+                intent.putExtra(RecipeListActivity.TWO_PANE, false);
                 context.startActivity(intent);
             }
         }

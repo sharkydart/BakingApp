@@ -30,7 +30,7 @@ public class RecipeDetailFragment extends Fragment {
 
     private Recipe mItem;
     private boolean mTwoPane;
-    private StepsFragment.OnListFragmentInteractionListener mListener;
+//    private StepsFragment.OnListFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,11 +65,13 @@ public class RecipeDetailFragment extends Fragment {
 
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.tvIngredients)).setText(mItem.getIngredientsDump());
-            StepsAdapter myStepAdapter = new StepsAdapter((AppCompatActivity)getActivity(), mTwoPane, mItem.getTheSteps(), mListener);
+            StepsAdapter myStepAdapter = new StepsAdapter((AppCompatActivity)getActivity(), mTwoPane, mItem.getTheSteps()/*, mListener*/);
             RecyclerView myrecycler = rootView.findViewById(R.id.rvStep_list);
             myrecycler.setAdapter(myStepAdapter);
+            rootView.findViewById(R.id.app_bar).setVisibility(View.GONE);
+            rootView.findViewById(R.id.toolbar_layout).setVisibility(View.GONE);
             //((TextView) rootView.findViewById(R.id.recipe_detail)).append(mItem.getStepsDump());
-            Log.d("fart", mItem.getStepsDump());
+            Log.d("fart", "YO YO YO \n\n" + mItem.getStepsDump());
         }
 
         return rootView;

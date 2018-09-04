@@ -19,9 +19,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="0dp"
+            android:layout_marginBottom="10dp"
             android:visibility="visible"
-            android:layout_weight="2"
+            android:layout_weight="5"
             />
         <android.support.design.card.MaterialCardView
             android:id="@+id/crdDescription"
@@ -33,7 +33,8 @@
             android:layout_marginBottom="10dp"
             app:cardCornerRadius="8dp"
             app:cardBackgroundColor="@color/colorBabyGreen"
-            android:layout_weight="2"
+            android:layout_weight="0"
+            android:visibility="gone"
             >
             <TextView
                 android:id="@+id/tvStepDescription"
@@ -47,25 +48,19 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_weight="1"
-            android:weightSum="2">
+            android:weightSum="0"
+            android:visibility="gone">
             <android.support.design.button.MaterialButton
                 android:id="@+id/btnPrevious"
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
                 android:layout_weight="1"
-                android:layout_marginStart="10dp"
-                app:cornerRadius="8dp"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:text="@string/btnPrevStepText"
+                android:visibility="invisible"
                 />
             <android.support.design.button.MaterialButton
                 android:id="@+id/btnNext"
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
-                android:layout_marginEnd="10dp"
-                app:cornerRadius="8dp"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:text="@string/btnNextStepText"
                 android:layout_weight="1"
                 />
         </LinearLayout>

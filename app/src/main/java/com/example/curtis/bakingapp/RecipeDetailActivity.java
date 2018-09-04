@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -16,8 +15,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.curtis.bakingapp.model.Recipe;
-import com.example.curtis.bakingapp.model.Step;
-import com.example.curtis.bakingapp.StepsFragment.OnListFragmentInteractionListener;
 import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
 
 /**
@@ -26,13 +23,13 @@ import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity implements StepsFragment.OnListFragmentInteractionListener{
+public class RecipeDetailActivity extends AppCompatActivity {
 
     private boolean mTwoPane;
     private Recipe mTheRecipe;
     private RecyclerView mTheRecyclerView;
     private StepsAdapter mStepsAdapter;
-    private OnListFragmentInteractionListener mListener;
+//    private OnListFragmentInteractionListener mListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +73,14 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepsFrag
             mTwoPane = getIntent().getBooleanExtra(RecipeListActivity.TWO_PANE, false);
             arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
 
-            RecipeDetailFragment fragment = new RecipeDetailFragment();
-            fragment.setArguments(arguments);
+            if(mTwoPane) {
+                RecipeDetailFragment fragment = new RecipeDetailFragment();
+                fragment.setArguments(arguments);
 
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.recipe_detail_container, fragment)
-                    .commit();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.recipe_detail_container, fragment)
+                        .commit();
+            }
         }
         else{
             mTwoPane = savedInstanceState.getBoolean(RecipeListActivity.TWO_PANE);
@@ -100,7 +99,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepsFrag
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mStepsAdapter = new StepsAdapter(this, mTwoPane, mTheRecipe.getTheSteps(), mListener);
+        mStepsAdapter = new StepsAdapter(this, mTwoPane, mTheRecipe.getTheSteps()/*, mListener*/);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(mStepsAdapter);
     }
@@ -127,19 +126,19 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepsFrag
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onListFragmentInteraction(View v, Step clickedStep) {
-        Log.d("fart", "clicked something");
-        if(clickedStep != null) {
-            Log.d("fart", "fragment interacted with: step " + clickedStep.getTheID() + "\n" + clickedStep.getTheShortDescription());
-            //TODO: control video playback in some fashion?
-            //TODO: possibly need to send the view obj as well - something to get the xpVideo, etc.
-            Log.d("fart", "Video URL: " + clickedStep.getTheVideoURL());
-
-            if (v != null) {
-                TextView temp = (TextView) v.findViewById(R.id.tvShortDescription);
-                temp.setText("BARF");
-            }
-        }
-    }
+//    @Override
+//    public void onListFragmentInteraction(View v, Step clickedStep) {
+//        Log.d("fart", "clicked something");
+//        if(clickedStep != null) {
+//            Log.d("fart", "fragment interacted with: step " + clickedStep.getTheID() + "\n" + clickedStep.getTheShortDescription());
+//            //TODO: control video playback in some fashion?
+//            //TODO: possibly need to send the view obj as well - something to get the xpVideo, etc.
+//            Log.d("fart", "Video URL: " + clickedStep.getTheVideoURL());
+//
+//            if (v != null) {
+//                TextView temp = (TextView) v.findViewById(R.id.tvShortDescription);
+//                temp.setText("BARF");
+//            }
+//        }
+//    }
 }
