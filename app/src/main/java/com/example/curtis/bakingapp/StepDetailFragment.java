@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,9 +64,17 @@ public class StepDetailFragment extends Fragment {
         {
             TextView txtDesc = rootView.findViewById(R.id.tvStepDescription);
             txtDesc.setText(mTheStep.getTheDescription());
+            txtDesc.setVisibility(View.VISIBLE);
+            Log.d("fart", "Description: " + mTheStep.getTheDescription());
+            Log.d("fart", "Info: " + mTheStep.getInfo());
 
-            theVideoHelper = new VideoHelper((PlayerView)rootView.findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
-            theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+            if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+                theVideoHelper = new VideoHelper((PlayerView) rootView.findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+                theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+            }else{
+                rootView.findViewById(R.id.pvVideo).setVisibility(View.GONE);
+            }
+
         }
         return rootView;
     }

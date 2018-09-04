@@ -5,6 +5,7 @@ import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.curtis.bakingapp.Video.VideoHelper;
@@ -46,7 +47,11 @@ public class StepDetailActivity extends AppCompatActivity {
             mTwoPane = getIntent().getBooleanExtra(RecipeListActivity.TWO_PANE, false);
             arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
 
-            theVideoHelper = new VideoHelper((PlayerView)findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+            }else{
+                findViewById(R.id.pvVideo).setVisibility(View.GONE);
+            }
 
             if(mTwoPane) {
                 StepDetailFragment fragment = new StepDetailFragment();
@@ -68,7 +73,10 @@ public class StepDetailActivity extends AppCompatActivity {
             TextView txtDesc = findViewById(R.id.tvStepDescription);
             txtDesc.setText(mTheStep.getTheDescription());
 
-            theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+            if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty())
+                theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+            else
+                findViewById(R.id.pvVideo).setVisibility(View.GONE);
         }
     }
 

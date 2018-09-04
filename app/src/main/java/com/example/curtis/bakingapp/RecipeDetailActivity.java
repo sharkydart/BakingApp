@@ -73,7 +73,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             mTwoPane = getIntent().getBooleanExtra(RecipeListActivity.TWO_PANE, false);
             arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
 
-            if(mTwoPane) {
+            if(mTwoPane){
                 RecipeDetailFragment fragment = new RecipeDetailFragment();
                 fragment.setArguments(arguments);
 

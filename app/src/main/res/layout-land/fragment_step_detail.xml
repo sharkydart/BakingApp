@@ -39,7 +39,8 @@
             <TextView
                 android:id="@+id/tvStepDescription"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="10dp"
+                android:visibility="gone"
                 android:text="@string/hello_blank_fragment" />
         </android.support.design.card.MaterialCardView>
         <LinearLayout
@@ -55,13 +56,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
                 android:layout_weight="1"
-                android:visibility="invisible"
+                android:visibility="gone"
                 />
             <android.support.design.button.MaterialButton
                 android:id="@+id/btnNext"
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 />
         </LinearLayout>
     </LinearLayout>
