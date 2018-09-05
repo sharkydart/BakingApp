@@ -1,5 +1,6 @@
 package com.example.curtis.bakingapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,14 +9,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.curtis.bakingapp.model.Recipe;
+import com.example.curtis.bakingapp.model.Step;
 import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
+
+import java.util.ArrayList;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -23,7 +29,7 @@ import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity /*implements StepDetailActivity.OnSwitchStepsListener*/{
 
     private boolean mTwoPane;
     private Recipe mTheRecipe;
@@ -125,6 +131,40 @@ public class RecipeDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    public void OnSwitchStepClick(Step theStep, boolean nextIfTrueBackIfFalse) {
+//        if(mTheRecipe != null && theStep != null){
+//            ArrayList<Step> theSteps = mTheRecipe.getTheSteps();
+//            int curIndex = theSteps.indexOf(theStep);
+//            Log.d("fart", "clicked index: " + curIndex);
+//            Step loadStep;
+//            if(nextIfTrueBackIfFalse)
+//            {//next
+//                if(curIndex < theSteps.size()) {
+//                    curIndex = curIndex + 1;
+//                    loadStep = theSteps.get(curIndex);
+//                }else{
+//                    //else: currently at the end, so can't go forward
+//                    return;
+//                }
+//            }else{//prev
+//                if(curIndex > 0) {
+//                    curIndex = curIndex - 1;
+//                    loadStep = theSteps.get(curIndex);
+//                }else {
+//                    //else: currently at the beginning, so can't go back
+//                    return;
+//                }
+//            }
+//
+//            Context context = getApplicationContext();
+//            Intent intent = new Intent(context, StepDetailActivity.class);
+//            intent.putExtra(StepsFragment.THE_STEP_ID, loadStep);
+//            intent.putExtra(RecipeListActivity.TWO_PANE, false);
+//            context.startActivity(intent);
+//        }
+//    }
 
 //    @Override
 //    public void onListFragmentInteraction(View v, Step clickedStep) {

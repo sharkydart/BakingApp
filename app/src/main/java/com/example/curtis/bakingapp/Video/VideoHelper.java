@@ -3,6 +3,8 @@ package com.example.curtis.bakingapp.Video;
 import android.net.Uri;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -68,6 +70,14 @@ public class VideoHelper {
             MediaSource videoSource = mTheMediaFactory.createMediaSource(Uri.parse(theVideoUrl));
             // Prepare the player with the source.
             mSimplePlayer.prepare(videoSource);
+        }
+    }
+
+    public void stopAndDestroy(){
+        if(mSimplePlayer != null) {
+            mSimplePlayer.stop();
+            mSimplePlayer.release();
+            mSimplePlayer = null;
         }
     }
 

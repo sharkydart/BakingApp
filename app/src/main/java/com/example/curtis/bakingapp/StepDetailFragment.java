@@ -14,6 +14,8 @@ import com.example.curtis.bakingapp.Video.VideoHelper;
 import com.example.curtis.bakingapp.model.Step;
 import com.google.android.exoplayer2.ui.PlayerView;
 
+import static com.example.curtis.bakingapp.StepDetailActivity.*;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +31,7 @@ public class StepDetailFragment extends Fragment {
     private boolean mTwoPane;
     VideoHelper theVideoHelper;
 
-    private OnFragmentInteractionListener mListener;
+//    private OnSwitchStepsListener mCallback;
 
     public StepDetailFragment() {
         // Required empty public constructor
@@ -65,8 +67,6 @@ public class StepDetailFragment extends Fragment {
             TextView txtDesc = rootView.findViewById(R.id.tvStepDescription);
             txtDesc.setText(mTheStep.getTheDescription());
             txtDesc.setVisibility(View.VISIBLE);
-            Log.d("fart", "Description: " + mTheStep.getTheDescription());
-            Log.d("fart", "Info: " + mTheStep.getInfo());
 
             if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
                 theVideoHelper = new VideoHelper((PlayerView) rootView.findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
@@ -79,18 +79,18 @@ public class StepDetailFragment extends Fragment {
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+//    // TODO: Rename method, update argument and hook method into UI event
+//    public void onButtonPressed(int theStepID, boolean theDirection) {
+//        if (mCallback != null) {
+//            mCallback.OnSwitchStepClick(theStepID, theDirection);
+//        }
+//    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
+//        if (context instanceof OnSwitchStepsListener) {
+//            mCallback = (OnSwitchStepsListener) context;
 //        } else {
 //            throw new RuntimeException(context.toString()
 //                    + " must implement OnFragmentInteractionListener");
@@ -100,7 +100,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+//        mCallback = null;
     }
 
     /**

@@ -35,8 +35,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         public void onClick(View view) {
             Step theStep = (Step)view.getTag();
             if (mTwoPane) {
-                Toast.makeText(view.getContext(), "clicked a step - tablet", Toast.LENGTH_SHORT).show();
-//                getVideoInto(theStep.getTheVideoURL());
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(StepsFragment.THE_STEP_ID, theStep);
                 arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
@@ -48,10 +46,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
                         .replace(R.id.recipe_detail_container, fragment)
                         .commit();
             } else {
-                Toast.makeText(view.getContext(), "clicked a step - phone", Toast.LENGTH_SHORT).show();
-                  //load video
                 Context context = view.getContext();
                 Intent intent = new Intent(context, StepDetailActivity.class);
+                intent.putExtra(StepDetailActivity.THE_STEPS_ARRAY, mValues);
                 intent.putExtra(StepsFragment.THE_STEP_ID, theStep);
                 intent.putExtra(RecipeListActivity.TWO_PANE, false);
                 context.startActivity(intent);

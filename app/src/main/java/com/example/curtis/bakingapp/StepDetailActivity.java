@@ -1,12 +1,17 @@
 package com.example.curtis.bakingapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.curtis.bakingapp.Video.VideoHelper;
 import com.example.curtis.bakingapp.model.Step;
@@ -24,24 +29,36 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.util.ArrayList;
+
 public class StepDetailActivity extends AppCompatActivity {
 
+    public static final String THE_STEPS_ARRAY = "com.example.curtis.bakingapp.THESTEPSARRAY";
+    private ArrayList<Step> mStepsArray;
     private Step mTheStep;
     private boolean mTwoPane;
 //    SimpleExoPlayer mSimplePlayer;
 //    PlayerView mThePlayerView;
 //    ExtractorMediaSource.Factory mTheMediaFactory;
     VideoHelper theVideoHelper;
+//    OnSwitchStepsListener mCallback;
+//    public interface OnSwitchStepsListener{
+//        void OnSwitchStepClick(Step theStep, boolean nextIfTrueBackIfFalse);
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_step_detail);
+        setContentView(R.layout.fragment_step_detail);
 
-        if (savedInstanceState == null) {
+//        mCallback = (OnSwitchStepsListener)getParent();
+
+        if (savedInstanceState == null){
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
+            mStepsArray = getIntent().getParcelableArrayListExtra(THE_STEPS_ARRAY);
+            arguments.putParcelableArrayList(THE_STEPS_ARRAY, mStepsArray);
             mTheStep = getIntent().getParcelableExtra(StepsFragment.THE_STEP_ID);
             arguments.putParcelable(StepsFragment.THE_STEP_ID, mTheStep);
             mTwoPane = getIntent().getBooleanExtra(RecipeListActivity.TWO_PANE, false);
@@ -66,12 +83,28 @@ public class StepDetailActivity extends AppCompatActivity {
         else{
             mTwoPane = savedInstanceState.getBoolean(RecipeListActivity.TWO_PANE);
             mTheStep = savedInstanceState.getParcelable(StepsFragment.THE_STEP_ID);
+            mStepsArray = savedInstanceState.getParcelableArrayList(THE_STEPS_ARRAY);
             //get videohelper?
         }
 
         if(mTheStep != null) {
             TextView txtDesc = findViewById(R.id.tvStepDescription);
             txtDesc.setText(mTheStep.getTheDescription());
+//            txtDesc.setVisibility(View.VISIBLE);
+            findViewById(R.id.btnPrevious).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    mCallback.OnSwitchStepClick(mTheStep, false);
+                    switchStepClick(false);
+                }
+            });
+            findViewById(R.id.btnNext).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    mCallback.OnSwitchStepClick(mTheStep, true);
+                    switchStepClick(true);
+                }
+            });
 
             if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty())
                 theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
@@ -80,10 +113,66 @@ public class StepDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void switchStepClick(boolean nextIfTrueBackIfFalse) {
+        if(mStepsArray != null && mTheStep != null){
+            int curIndex = mTheStep.getTheID();
+            Log.d("fart", "clicked index: " + curIndex);
+            Step loadStep;
+            if(nextIfTrueBackIfFalse){
+                //next
+                if(curIndex < mStepsArray.size()-1) {
+                    curIndex = curIndex + 1;
+                    loadStep = mStepsArray.get(curIndex);
+                }else{
+                    //else: currently at the end, so can't go forward
+                    return;
+                }
+            }else{
+                //prev
+                if(curIndex > 0) {
+                    curIndex = curIndex - 1;
+                    loadStep = mStepsArray.get(curIndex);
+                }else {
+                    //else: currently at the beginning, so can't go back
+                    return;
+                }
+            }
+
+            Context context = this;
+            Intent intent = new Intent(context, StepDetailActivity.class);
+            intent.putExtra(StepDetailActivity.THE_STEPS_ARRAY, mStepsArray);
+            intent.putExtra(StepsFragment.THE_STEP_ID, loadStep);
+            intent.putExtra(RecipeListActivity.TWO_PANE, false);
+            context.startActivity(intent);
+        }
+        else
+        {
+            Log.d("fart", "not working");
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            findViewById(R.id.crdDescription).setVisibility(View.GONE);
+            findViewById(R.id.llButtons).setVisibility(View.GONE);
+        }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            findViewById(R.id.crdDescription).setVisibility(View.VISIBLE);
+            findViewById(R.id.llButtons).setVisibility(View.VISIBLE);
+        }
+        super.onConfigurationChanged(newConfig);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
         //save stuff here
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(theVideoHelper != null)
+            theVideoHelper.stopAndDestroy();
+    }
 }
