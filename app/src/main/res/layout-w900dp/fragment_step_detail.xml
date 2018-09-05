@@ -22,6 +22,9 @@
             android:layout_marginBottom="0dp"
             android:visibility="visible"
             android:layout_weight="3"
+            app:controller_layout_id="@layout/custom_playerview"
+            app:rewind_increment="500"
+            app:show_timeout="0"
             />
         <android.support.design.card.MaterialCardView
             android:id="@+id/crdDescription"

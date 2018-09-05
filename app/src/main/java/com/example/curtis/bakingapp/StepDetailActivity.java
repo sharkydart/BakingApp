@@ -37,6 +37,12 @@ public class StepDetailActivity extends AppCompatActivity {
     private ArrayList<Step> mStepsArray;
     private Step mTheStep;
     private boolean mTwoPane;
+    private final static String VID_PLAY = "vidplaywhenready";
+    private final static String VID_POS = "vidplayposition";
+    private final static String VID_WIND = "vidplaycurrentwindow";
+    boolean mVidPlayWhenReady;
+    long mVidPlayPosition;
+    int mVidPlayWindow;
 //    SimpleExoPlayer mSimplePlayer;
 //    PlayerView mThePlayerView;
 //    ExtractorMediaSource.Factory mTheMediaFactory;
@@ -85,6 +91,13 @@ public class StepDetailActivity extends AppCompatActivity {
             mTheStep = savedInstanceState.getParcelable(StepsFragment.THE_STEP_ID);
             mStepsArray = savedInstanceState.getParcelableArrayList(THE_STEPS_ARRAY);
             //get videohelper?
+            if(theVideoHelper == null)
+                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+            theVideoHelper.setPlayAndPosAndWindow(
+                    savedInstanceState.getBoolean(VID_PLAY),
+                    savedInstanceState.getLong(VID_POS),
+                    savedInstanceState.getInt(VID_WIND)
+            );
         }
 
         if(mTheStep != null) {
@@ -106,8 +119,9 @@ public class StepDetailActivity extends AppCompatActivity {
                 }
             });
 
-            if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty())
+            if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
                 theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+            }
             else
                 findViewById(R.id.pvVideo).setVisibility(View.GONE);
         }
@@ -164,14 +178,51 @@ public class StepDetailActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("fart", "onSaveInstanceState");
         //save stuff here
+//        outState.putParcelableArrayList();
+//        outState.putParcelable();
+        if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null){
+            mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
+            mVidPlayWindow = theVideoHelper.getmSimplePlayer().getCurrentWindowIndex();
+            mVidPlayWhenReady = theVideoHelper.getmSimplePlayer().getPlayWhenReady();
+            outState.putBoolean(VID_PLAY, mVidPlayWhenReady);
+            outState.putInt(VID_WIND, mVidPlayWindow);
+            outState.putLong(VID_POS, mVidPlayPosition);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("fart", "OnPause");
+        if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null) {
+            mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
+            theVideoHelper.stopAndDestroy();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("fart", "OnResume");
+        if(theVideoHelper.getmSimplePlayer() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+            if(theVideoHelper == null)
+                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+            //initplayer
+            theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+            //seekto play position
+            theVideoHelper.setPlayAndPosAndWindow(mVidPlayWhenReady, mVidPlayPosition, mVidPlayWindow);
+            //setplaywhenready
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("fart", "OnDestroy");
         if(theVideoHelper != null)
             theVideoHelper.stopAndDestroy();
     }

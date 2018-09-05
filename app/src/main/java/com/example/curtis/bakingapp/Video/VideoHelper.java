@@ -32,14 +32,17 @@ public class VideoHelper {
         this.theVideoUrl = theVideoUrl;
     }
 
+    public PlayerView getmThePlayerView() {
+        return mThePlayerView;
+    }
+
+    public void setmThePlayerView(PlayerView mThePlayerView) {
+        this.mThePlayerView = mThePlayerView;
+    }
 
     public VideoHelper(PlayerView thePlayerView, String initVideoUrl){
         mThePlayerView = thePlayerView;
         theVideoUrl = initVideoUrl;
-    }
-    public void prepTheVideo(){
-        if(theVideoUrl != null)
-            getVideoInto(theVideoUrl);
     }
 
     public void getVideoInto(String newVideoUrl){
@@ -73,6 +76,10 @@ public class VideoHelper {
         }
     }
 
+    public SimpleExoPlayer getmSimplePlayer() {
+        return mSimplePlayer;
+    }
+
     public void stopAndDestroy(){
         if(mSimplePlayer != null) {
             mSimplePlayer.stop();
@@ -80,5 +87,14 @@ public class VideoHelper {
             mSimplePlayer = null;
         }
     }
-
+    public void stop(){
+        if(mSimplePlayer!= null)
+            mSimplePlayer.stop();
+    }
+    public void setPlayAndPosAndWindow(boolean playState, long resumePosition, int curWindow){
+        if(mSimplePlayer != null) {
+            mSimplePlayer.seekTo(curWindow,resumePosition);
+            mSimplePlayer.setPlayWhenReady(playState);
+        }
+    }
 }
