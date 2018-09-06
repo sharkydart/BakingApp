@@ -101,30 +101,35 @@ public class StepDetailActivity extends AppCompatActivity {
         }
 
         if(mTheStep != null) {
-            TextView txtDesc = findViewById(R.id.tvStepDescription);
-            txtDesc.setText(mTheStep.getTheDescription());
-//            txtDesc.setVisibility(View.VISIBLE);
-            findViewById(R.id.btnPrevious).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-//                    mCallback.OnSwitchStepClick(mTheStep, false);
-                    switchStepClick(false);
-                }
-            });
-            findViewById(R.id.btnNext).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-//                    mCallback.OnSwitchStepClick(mTheStep, true);
-                    switchStepClick(true);
-                }
-            });
-
-            if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-                theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
-            }
-            else
-                findViewById(R.id.pvVideo).setVisibility(View.GONE);
+            loadFromCurStep();
         }
+    }
+    void loadFromCurStep(){
+        TextView txtDesc = findViewById(R.id.tvStepDescription);
+        txtDesc.setText(mTheStep.getTheDescription());
+//            txtDesc.setVisibility(View.VISIBLE);
+        findViewById(R.id.btnPrevious).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                    mCallback.OnSwitchStepClick(mTheStep, false);
+                switchStepClick(false);
+            }
+        });
+        findViewById(R.id.btnNext).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                    mCallback.OnSwitchStepClick(mTheStep, true);
+                switchStepClick(true);
+            }
+        });
+
+        if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+            Log.d("fart", "url = " + mTheStep.getTheVideoURL());
+            theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+            findViewById(R.id.pvVideo).setVisibility(View.VISIBLE);
+        }
+        else
+            findViewById(R.id.pvVideo).setVisibility(View.GONE);
     }
 
     private void switchStepClick(boolean nextIfTrueBackIfFalse) {
@@ -152,12 +157,15 @@ public class StepDetailActivity extends AppCompatActivity {
                 }
             }
 
-            Context context = this;
-            Intent intent = new Intent(context, StepDetailActivity.class);
-            intent.putExtra(StepDetailActivity.THE_STEPS_ARRAY, mStepsArray);
-            intent.putExtra(StepsFragment.THE_STEP_ID, loadStep);
-            intent.putExtra(RecipeListActivity.TWO_PANE, false);
-            context.startActivity(intent);
+            mTheStep = loadStep;
+            loadFromCurStep();
+//            Context context = this;
+//            Intent intent = new Intent(context, StepDetailActivity.class);
+//            intent.putExtra(StepDetailActivity.THE_STEPS_ARRAY, mStepsArray);
+//            intent.putExtra(StepsFragment.THE_STEP_ID, loadStep);
+//            intent.putExtra(RecipeListActivity.TWO_PANE, false);
+//            Log.d("fart", "starting new intent");
+//            context.startActivity(intent);
         }
         else
         {
@@ -182,8 +190,8 @@ public class StepDetailActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.d("fart", "onSaveInstanceState");
         //save stuff here
-//        outState.putParcelableArrayList();
-//        outState.putParcelable();
+        outState.putParcelableArrayList(THE_STEPS_ARRAY, mStepsArray);
+        outState.putParcelable(StepsFragment.THE_STEP_ID, mTheStep);
         if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null){
             mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
             mVidPlayWindow = theVideoHelper.getmSimplePlayer().getCurrentWindowIndex();
@@ -194,30 +202,30 @@ public class StepDetailActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("fart", "OnPause");
-        if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null) {
-            mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
-            theVideoHelper.stopAndDestroy();
-        }
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        Log.d("fart", "OnPause");
+//        if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null) {
+//            mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
+//            theVideoHelper.stopAndDestroy();
+//        }
+//    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("fart", "OnResume");
-        if(theVideoHelper.getmSimplePlayer() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-            if(theVideoHelper == null)
-                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
-            //initplayer
-            theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
-            //seekto play position
-            theVideoHelper.setPlayAndPosAndWindow(mVidPlayWhenReady, mVidPlayPosition, mVidPlayWindow);
-            //setplaywhenready
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Log.d("fart", "OnResume");
+//        if(theVideoHelper.getmSimplePlayer() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+//            if(theVideoHelper == null)
+//                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+//            //initplayer
+//            theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+//            //seekto play position
+//            theVideoHelper.setPlayAndPosAndWindow(mVidPlayWhenReady, mVidPlayPosition, mVidPlayWindow);
+//            //setplaywhenready
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
