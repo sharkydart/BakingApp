@@ -192,46 +192,60 @@ public class StepDetailActivity extends AppCompatActivity {
         //save stuff here
         outState.putParcelableArrayList(THE_STEPS_ARRAY, mStepsArray);
         outState.putParcelable(StepsFragment.THE_STEP_ID, mTheStep);
+/*
         if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null){
             mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
             mVidPlayWindow = theVideoHelper.getmSimplePlayer().getCurrentWindowIndex();
             mVidPlayWhenReady = theVideoHelper.getmSimplePlayer().getPlayWhenReady();
+*/
             outState.putBoolean(VID_PLAY, mVidPlayWhenReady);
             outState.putInt(VID_WIND, mVidPlayWindow);
             outState.putLong(VID_POS, mVidPlayPosition);
+//        }
+    }
+
+    private void stopAndReleaseVideoHelper(){
+        if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null) {
+            mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
+            mVidPlayWindow = theVideoHelper.getmSimplePlayer().getCurrentWindowIndex();
+            mVidPlayWhenReady = theVideoHelper.getmSimplePlayer().getPlayWhenReady();
+            theVideoHelper.stopAndDestroy();
         }
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        Log.d("fart", "OnPause");
-//        if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null) {
-//            mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
-//            theVideoHelper.stopAndDestroy();
-//        }
-//    }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        Log.d("fart", "OnResume");
-//        if(theVideoHelper.getmSimplePlayer() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-//            if(theVideoHelper == null)
-//                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
-//            //initplayer
-//            theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
-//            //seekto play position
-//            theVideoHelper.setPlayAndPosAndWindow(mVidPlayWhenReady, mVidPlayPosition, mVidPlayWindow);
-//            //setplaywhenready
-//        }
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(Util.SDK_INT <= 23){
+            stopAndReleaseVideoHelper();
+        }
+    }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("fart", "OnDestroy");
-        if(theVideoHelper != null)
-            theVideoHelper.stopAndDestroy();
+    protected void onStop() {
+        super.onStop();
+        if(Util.SDK_INT > 23){
+            stopAndReleaseVideoHelper();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(Util.SDK_INT > 23){
+            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(Util.SDK_INT <= 23 || theVideoHelper == null){
+            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+            }
+        }
     }
 }
