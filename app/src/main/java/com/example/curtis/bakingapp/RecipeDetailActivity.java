@@ -105,7 +105,7 @@ public class RecipeDetailActivity extends AppCompatActivity /*implements StepDet
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mStepsAdapter = new StepsAdapter(this, mTwoPane, mTheRecipe.getTheSteps()/*, mListener*/);
+        mStepsAdapter = new StepsAdapter(this, mTwoPane, mTheRecipe/*.getTheSteps()*//*, mListener*/);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(mStepsAdapter);
     }

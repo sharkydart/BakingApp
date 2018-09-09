@@ -65,7 +65,7 @@ public class RecipeDetailFragment extends Fragment {
 
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.tvIngredients)).setText(mItem.getIngredientsDump());
-            StepsAdapter myStepAdapter = new StepsAdapter((AppCompatActivity)getActivity(), mTwoPane, mItem.getTheSteps()/*, mListener*/);
+            StepsAdapter myStepAdapter = new StepsAdapter((AppCompatActivity)getActivity(), mTwoPane, mItem/*.getTheSteps()*//*, mListener*/);
             RecyclerView myrecycler = rootView.findViewById(R.id.rvStep_list);
             myrecycler.setAdapter(myStepAdapter);
             rootView.findViewById(R.id.app_bar).setVisibility(View.GONE);

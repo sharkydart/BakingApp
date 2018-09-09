@@ -218,7 +218,8 @@ public class RecipeListActivity extends AppCompatActivity {
 
                     //update adapter
                     mRecipesAdapter.notifyDataSetChanged();
-                    Toast.makeText(RecipeListActivity.this, "Refreshed!", Toast.LENGTH_SHORT).show();
+
+//                    Toast.makeText(RecipeListActivity.this, "Refreshed!", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(RecipeListActivity.this, "Data Issue", Toast.LENGTH_LONG).show();

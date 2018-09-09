@@ -14,10 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.curtis.bakingapp.R;
+import com.example.curtis.bakingapp.RecipeDetailFragment;
 import com.example.curtis.bakingapp.RecipeListActivity;
 import com.example.curtis.bakingapp.StepDetailActivity;
 import com.example.curtis.bakingapp.StepDetailFragment;
 import com.example.curtis.bakingapp.StepsFragment;
+import com.example.curtis.bakingapp.model.Recipe;
 import com.example.curtis.bakingapp.model.Step;
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> {
 
+    private final Recipe mTheRecipe;
     private final AppCompatActivity mParentActivity;
     private final ArrayList<Step> mValues;
 //    private final OnListFragmentInteractionListener mListener;
@@ -35,16 +38,32 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         public void onClick(View view) {
             Step theStep = (Step)view.getTag();
             if (mTwoPane) {
-                Bundle arguments = new Bundle();
-                arguments.putParcelable(StepsFragment.THE_STEP_ID, theStep);
-                arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
-                StepDetailFragment fragment = new StepDetailFragment();
-                fragment.setArguments(arguments);
-                //TODO - ??? recipe_detail_container -> step_detail_container ???
-                //TODO - create a container for the left hand side and load the recipe details there?
-                mParentActivity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.recipe_detail_container, fragment)
-                        .commit();
+                //Prepare the details of the step for the right side fragment
+                Bundle rightArgs = new Bundle();
+                rightArgs.putParcelable(StepsFragment.THE_STEP_ID, theStep);
+                rightArgs.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
+                StepDetailFragment rightFragment = new StepDetailFragment();
+                rightFragment.setArguments(rightArgs);
+
+                //Prepare the steps list for the left side fragment
+                Bundle leftArgs = new Bundle();
+                leftArgs.putParcelable(RecipeDetailFragment.THE_RECIPE_ID, mTheRecipe);
+                leftArgs.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
+                RecipeDetailFragment leftFragment = new RecipeDetailFragment();
+                leftFragment.setArguments(leftArgs);
+
+                if(mParentActivity.findViewById(R.id.recipe_list).getVisibility() != View.GONE) {
+                    mParentActivity.findViewById(R.id.recipe_list).setVisibility(View.GONE);
+                    mParentActivity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.recipe_menu_container, leftFragment)
+                            .replace(R.id.recipe_detail_container, rightFragment)
+                            .commit();
+                }
+                else{
+                    mParentActivity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.recipe_detail_container, rightFragment)
+                            .commit();
+                }
             } else {
                 Context context = view.getContext();
                 Intent intent = new Intent(context, StepDetailActivity.class);
@@ -56,8 +75,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         }
     };
 
-    public StepsAdapter(AppCompatActivity parent, boolean twoPane, ArrayList<Step> items/*, OnListFragmentInteractionListener listener*/) {
-        mValues = items;
+    public StepsAdapter(AppCompatActivity parent, boolean twoPane, Recipe theRecipe/*ArrayList<Step> items*//*, OnListFragmentInteractionListener listener*/) {
+        mTheRecipe = theRecipe;
+        mValues = theRecipe.getTheSteps();
         mParentActivity = parent;
 //        mListener = listener;
         mTwoPane = twoPane;

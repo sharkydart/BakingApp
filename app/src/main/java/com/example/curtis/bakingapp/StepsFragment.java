@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.curtis.bakingapp.model.Recipe;
 import com.example.curtis.bakingapp.model.Step;
 import com.example.curtis.bakingapp.recyclerviewstuff.StepsAdapter;
 
@@ -21,6 +22,7 @@ public class StepsFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     public static final String THE_STEP_ID = "step_id";
 
+    private Recipe mTheRecipe;
     private ArrayList<Step> mStepItems;
     private int mColumnCount = 1;
 //    OnListFragmentInteractionListener mListener;
@@ -66,6 +68,7 @@ public class StepsFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             mStepItems = getArguments().getParcelable(THE_STEP_ID);
+            mTheRecipe = getArguments().getParcelable(RecipeDetailFragment.THE_RECIPE_ID);
             mTwoPane = getArguments().getBoolean(RecipeListActivity.TWO_PANE);
             mParentActivity = (RecipeDetailActivity)getActivity().getParent();
         }
@@ -84,9 +87,10 @@ public class StepsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new StepsAdapter(mParentActivity , mTwoPane, mStepItems/*, mListener*/));
+
+            recyclerView.setAdapter(new StepsAdapter(mParentActivity , mTwoPane, mTheRecipe/*, mListener*/));
         }
-        return view;
+        return view;//recyclerView
     }
 
 
