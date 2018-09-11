@@ -171,8 +171,6 @@ public class RecipeDetailActivity extends AppCompatActivity /*implements StepDet
 //        Log.d("fart", "clicked something");
 //        if(clickedStep != null) {
 //            Log.d("fart", "fragment interacted with: step " + clickedStep.getTheID() + "\n" + clickedStep.getTheShortDescription());
-//            //TODO: control video playback in some fashion?
-//            //TODO: possibly need to send the view obj as well - something to get the xpVideo, etc.
 //            Log.d("fart", "Video URL: " + clickedStep.getTheVideoURL());
 //
 //            if (v != null) {

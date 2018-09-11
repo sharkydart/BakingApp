@@ -69,7 +69,7 @@ public class StepDetailFragment extends Fragment {
             txtDesc.setVisibility(View.VISIBLE);
 
             if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-                theVideoHelper = new VideoHelper((PlayerView) rootView.findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+                theVideoHelper = new VideoHelper(getContext(), (PlayerView) rootView.findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
                 theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
             }else{
                 rootView.findViewById(R.id.pvVideo).setVisibility(View.GONE);
@@ -79,22 +79,9 @@ public class StepDetailFragment extends Fragment {
         return rootView;
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(int theStepID, boolean theDirection) {
-//        if (mCallback != null) {
-//            mCallback.OnSwitchStepClick(theStepID, theDirection);
-//        }
-//    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnSwitchStepsListener) {
-//            mCallback = (OnSwitchStepsListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
@@ -116,5 +103,25 @@ public class StepDetailFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 }

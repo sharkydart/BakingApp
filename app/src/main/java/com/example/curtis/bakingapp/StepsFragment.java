@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public class StepsFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     public static final String THE_STEP_ID = "step_id";
 
@@ -51,7 +50,7 @@ public class StepsFragment extends Fragment {
     public StepsFragment() {
     }
 
-    // TODO: Customize parameter initialization
+    // TODO: TABLET needs to also have correct function
     @SuppressWarnings("unused")
     public static StepsFragment newInstance(int columnCount) {
         StepsFragment fragment = new StepsFragment();

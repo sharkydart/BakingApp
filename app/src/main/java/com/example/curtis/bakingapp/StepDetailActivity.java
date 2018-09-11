@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.curtis.bakingapp.Video.VideoHelper;
 import com.example.curtis.bakingapp.model.Step;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -27,6 +29,7 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
@@ -43,8 +46,8 @@ public class StepDetailActivity extends AppCompatActivity {
     boolean mVidPlayWhenReady;
     long mVidPlayPosition;
     int mVidPlayWindow;
-//    SimpleExoPlayer mSimplePlayer;
-//    PlayerView mThePlayerView;
+    SimpleExoPlayer mSimplePlayer;
+    PlayerView mThePlayerView;
 //    ExtractorMediaSource.Factory mTheMediaFactory;
     VideoHelper theVideoHelper;
 //    OnSwitchStepsListener mCallback;
@@ -58,6 +61,7 @@ public class StepDetailActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_step_detail);
 
 //        mCallback = (OnSwitchStepsListener)getParent();
+        mThePlayerView = findViewById(R.id.pvVideo);
 
         if (savedInstanceState == null){
             // Create the detail fragment and add it to the activity
@@ -71,9 +75,9 @@ public class StepDetailActivity extends AppCompatActivity {
             arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
 
             if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
+                theVideoHelper = new VideoHelper(this,  mThePlayerView, mTheStep.getTheVideoURL());
             }else{
-                findViewById(R.id.pvVideo).setVisibility(View.GONE);
+                mThePlayerView.setVisibility(View.GONE);
             }
 
             if(mTwoPane) {
@@ -91,14 +95,15 @@ public class StepDetailActivity extends AppCompatActivity {
             mTheStep = savedInstanceState.getParcelable(StepsFragment.THE_STEP_ID);
             mStepsArray = savedInstanceState.getParcelableArrayList(THE_STEPS_ARRAY);
             //get videohelper?
-            if(theVideoHelper == null)
-                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
-            theVideoHelper.setPlayAndPosAndWindow(
-                    savedInstanceState.getBoolean(VID_PLAY),
-                    savedInstanceState.getLong(VID_POS),
-                    savedInstanceState.getInt(VID_WIND)
-            );
+
+            if(theVideoHelper == null) {
+                theVideoHelper = new VideoHelper(this, mThePlayerView, mTheStep.getTheVideoURL());
+                mSimplePlayer.seekTo(savedInstanceState.getInt(VID_WIND), savedInstanceState.getLong(VID_POS));
+                mSimplePlayer.setPlayWhenReady(savedInstanceState.getBoolean(VID_PLAY));
+            }
         }
+
+//        theVideoHelper.setmThePlayerView(mThePlayerView);
 
         if(mTheStep != null) {
             loadFromCurStep();
@@ -123,13 +128,15 @@ public class StepDetailActivity extends AppCompatActivity {
             }
         });
 
+        //TODO - Now the next and prev buttons aren't showing the video
         if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
             Log.d("fart", "url = " + mTheStep.getTheVideoURL());
             theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
-            findViewById(R.id.pvVideo).setVisibility(View.VISIBLE);
+            mSimplePlayer = theVideoHelper.getmSimplePlayer();
+            mThePlayerView.setVisibility(View.VISIBLE);
         }
         else
-            findViewById(R.id.pvVideo).setVisibility(View.GONE);
+            mThePlayerView.setVisibility(View.GONE);
     }
 
     private void switchStepClick(boolean nextIfTrueBackIfFalse) {
@@ -156,6 +163,7 @@ public class StepDetailActivity extends AppCompatActivity {
                     return;
                 }
             }
+            mSimplePlayer.stop();
 
             mTheStep = loadStep;
             loadFromCurStep();
@@ -205,19 +213,31 @@ public class StepDetailActivity extends AppCompatActivity {
     }
 
     private void stopAndReleaseVideoHelper(){
-        if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null) {
-            mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
-            mVidPlayWindow = theVideoHelper.getmSimplePlayer().getCurrentWindowIndex();
-            mVidPlayWhenReady = theVideoHelper.getmSimplePlayer().getPlayWhenReady();
-            theVideoHelper.stopAndDestroy();
+        if(theVideoHelper != null && mSimplePlayer != null) {
+            Log.d("fart", "actually should stop");
+            mVidPlayPosition = mSimplePlayer.getCurrentPosition();
+            mVidPlayWindow = mSimplePlayer.getCurrentWindowIndex();
+            mVidPlayWhenReady = mSimplePlayer.getPlayWhenReady();
+            theVideoHelper.stopAndDestroy(mSimplePlayer);
+            //mSimplePlayer = null;
+            theVideoHelper = null;
+        }
+        else{
+            Log.d("fart", "refusing to STOP");
         }
     }
 
+    //TODO: each of these implemented to reflect what I saw in tutorials
     @Override
     protected void onPause() {
         super.onPause();
         if(Util.SDK_INT <= 23){
-            stopAndReleaseVideoHelper();
+            Log.d("fart", "onPause - STOPPING");
+//            stopAndReleaseVideoHelper();
+            releasePlayer();
+        }
+        else{
+            Log.d("fart", "onPause - did not stop/release: SDK > 23");
         }
     }
 
@@ -225,7 +245,12 @@ public class StepDetailActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if(Util.SDK_INT > 23){
-            stopAndReleaseVideoHelper();
+            Log.d("fart", "onStop - STOPPING");
+//            stopAndReleaseVideoHelper();
+            releasePlayer();
+        }
+        else{
+            Log.d("fart", "onStop - did not stop/release: SDK <= 23");
         }
     }
 
@@ -233,9 +258,12 @@ public class StepDetailActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if(Util.SDK_INT > 23){
-            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
-            }
+            Log.d("fart", "onStart[ initPlayer ]");
+//            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+//                theVideoHelper = new VideoHelper(this, mThePlayerView, mTheStep.getTheVideoURL());
+//                theVideoHelper.setmThePlayerView(mThePlayerView);
+//            }
+            initPlayer();
         }
     }
 
@@ -243,9 +271,40 @@ public class StepDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if(Util.SDK_INT <= 23 || theVideoHelper == null){
-            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-                theVideoHelper = new VideoHelper((PlayerView) findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
-            }
+            Log.d("fart", "onResume[ initPlayer ]");
+//            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
+//                theVideoHelper = new VideoHelper(this,  mThePlayerView, mTheStep.getTheVideoURL());
+//                theVideoHelper.setmThePlayerView(mThePlayerView);
+//            }
+            initPlayer();
+        }
+    }
+
+    private void initPlayer(){
+        mSimplePlayer = ExoPlayerFactory.newSimpleInstance(
+                new DefaultRenderersFactory(this),
+                new DefaultTrackSelector(), new DefaultLoadControl());
+        mThePlayerView.setPlayer(mSimplePlayer);
+        mSimplePlayer.setPlayWhenReady(mVidPlayWhenReady);
+        mSimplePlayer.seekTo(mVidPlayWindow, mVidPlayPosition);
+        Uri videoLink = Uri.parse(mTheStep.getTheVideoURL());
+        MediaSource theMediaSource = mediaSourceFromLink(videoLink);
+        mSimplePlayer.prepare(theMediaSource, true, false);
+
+    }
+    private MediaSource mediaSourceFromLink(Uri theLink){
+        return new ExtractorMediaSource.Factory(
+                new DefaultHttpDataSourceFactory("exoplayer-codelab")).
+                createMediaSource(theLink);
+    }
+
+    private void releasePlayer() {
+        if (mSimplePlayer != null) {
+            mVidPlayPosition = mSimplePlayer.getCurrentPosition();
+            mVidPlayWindow = mSimplePlayer.getCurrentWindowIndex();
+            mVidPlayWhenReady = mSimplePlayer.getPlayWhenReady();
+            mSimplePlayer.release();
+            mSimplePlayer = null;
         }
     }
 }
