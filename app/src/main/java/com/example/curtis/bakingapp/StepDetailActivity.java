@@ -59,7 +59,6 @@ public class StepDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_step_detail);
 
-//        mCallback = (OnSwitchStepsListener)getParent();
         mThePlayerView = findViewById(R.id.pvVideo);
 
         if (savedInstanceState == null){
@@ -197,14 +196,12 @@ public class StepDetailActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d("fart", "onSaveInstanceState");
-        //save stuff here
         outState.putParcelableArrayList(THE_STEPS_ARRAY, mStepsArray);
         outState.putParcelable(StepsFragment.THE_STEP_ID, mTheStep);
 
         outState.putBoolean(VID_PLAY, mVidPlayWhenReady);
         outState.putInt(VID_WIND, mVidPlayWindow);
         outState.putLong(VID_POS, mVidPlayPosition);
-        //try mSimplePlayer properties if those don't work
     }
 
     @Override
@@ -216,28 +213,12 @@ public class StepDetailActivity extends AppCompatActivity {
         mVidPlayWindow = savedInstanceState.getInt(VID_WIND);
     }
 
-//    private void stopAndReleaseVideoHelper(){
-//        if(theVideoHelper != null && mSimplePlayer != null) {
-//            Log.d("fart", "actually should stop");
-//            mVidPlayPosition = mSimplePlayer.getCurrentPosition();
-//            mVidPlayWindow = mSimplePlayer.getCurrentWindowIndex();
-//            mVidPlayWhenReady = mSimplePlayer.getPlayWhenReady();
-//            theVideoHelper.stopAndDestroy(mSimplePlayer);
-//            //mSimplePlayer = null;
-//            theVideoHelper = null;
-//        }
-//        else{
-//            Log.d("fart", "refusing to STOP");
-//        }
-//    }
-
     //TODO: each of these implemented to reflect what I saw in tutorials
     @Override
     protected void onPause() {
         super.onPause();
         if(Util.SDK_INT <= 23){
             Log.d("fart", "onPause - STOPPING");
-//            stopAndReleaseVideoHelper();
             releasePlayer();
         }
         else{
@@ -250,7 +231,6 @@ public class StepDetailActivity extends AppCompatActivity {
         super.onStop();
         if(Util.SDK_INT > 23){
             Log.d("fart", "onStop - STOPPING");
-//            stopAndReleaseVideoHelper();
             releasePlayer();
         }
         else{
@@ -263,10 +243,6 @@ public class StepDetailActivity extends AppCompatActivity {
         super.onStart();
         if(Util.SDK_INT > 23){
             Log.d("fart", "onStart[ initPlayer ]");
-//            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-//                theVideoHelper = new VideoHelper(this, mThePlayerView, mTheStep.getTheVideoURL());
-//                theVideoHelper.setmThePlayerView(mThePlayerView);
-//            }
             initPlayer();
         }
     }
@@ -276,10 +252,6 @@ public class StepDetailActivity extends AppCompatActivity {
         super.onResume();
         if(Util.SDK_INT <= 23 || mSimplePlayer == null){
             Log.d("fart", "onResume[ initPlayer ]");
-//            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-//                theVideoHelper = new VideoHelper(this,  mThePlayerView, mTheStep.getTheVideoURL());
-//                theVideoHelper.setmThePlayerView(mThePlayerView);
-//            }
             initPlayer();
         }
     }
@@ -292,11 +264,6 @@ public class StepDetailActivity extends AppCompatActivity {
         prepareSimplePlayerWithSource(mTheStep.getTheVideoURL());
         mSimplePlayer.seekTo(mVidPlayWindow, mVidPlayPosition);
         mSimplePlayer.setPlayWhenReady(mVidPlayWhenReady);
-/*
-        Uri videoLink = Uri.parse(mTheStep.getTheVideoURL());
-        MediaSource theMediaSource = mediaSourceFromLink(videoLink);
-        mSimplePlayer.prepare(theMediaSource, true, false);
-*/
     }
     private void prepareSimplePlayerWithSource(String theUrlSource){
         Uri videoLink = Uri.parse(theUrlSource);

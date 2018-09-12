@@ -16,5 +16,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="update_text">Click \'Update\' to refresh the recipe list.</string>
 
 </resources>

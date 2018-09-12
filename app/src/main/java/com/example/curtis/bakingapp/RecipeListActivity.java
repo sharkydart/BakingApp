@@ -93,7 +93,7 @@ public class RecipeListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Click 'Update' to refresh the recipe list.", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, getString(R.string.update_text), Snackbar.LENGTH_LONG)
                         .setAction("Update", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
