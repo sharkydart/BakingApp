@@ -49,7 +49,6 @@ public class StepDetailActivity extends AppCompatActivity {
     SimpleExoPlayer mSimplePlayer;
     PlayerView mThePlayerView;
 //    ExtractorMediaSource.Factory mTheMediaFactory;
-    VideoHelper theVideoHelper;
 //    OnSwitchStepsListener mCallback;
 //    public interface OnSwitchStepsListener{
 //        void OnSwitchStepClick(Step theStep, boolean nextIfTrueBackIfFalse);
@@ -75,7 +74,9 @@ public class StepDetailActivity extends AppCompatActivity {
             arguments.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
 
             if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-                theVideoHelper = new VideoHelper(this,  mThePlayerView, mTheStep.getTheVideoURL());
+                if(mSimplePlayer == null)
+                    initPlayer();
+//                mThePlayerView.setVisibility(View.VISIBLE);
             }else{
                 mThePlayerView.setVisibility(View.GONE);
             }
@@ -95,24 +96,24 @@ public class StepDetailActivity extends AppCompatActivity {
             mTheStep = savedInstanceState.getParcelable(StepsFragment.THE_STEP_ID);
             mStepsArray = savedInstanceState.getParcelableArrayList(THE_STEPS_ARRAY);
             //get videohelper?
+            Log.d("fart", "-load vid state from saved instance-");
+            mVidPlayPosition = savedInstanceState.getLong(VID_POS);
+            mVidPlayWhenReady = savedInstanceState.getBoolean(VID_PLAY);
+            mVidPlayWindow = savedInstanceState.getInt(VID_WIND);
 
-            if(theVideoHelper == null) {
-                theVideoHelper = new VideoHelper(this, mThePlayerView, mTheStep.getTheVideoURL());
-                mSimplePlayer.seekTo(savedInstanceState.getInt(VID_WIND), savedInstanceState.getLong(VID_POS));
-                mSimplePlayer.setPlayWhenReady(savedInstanceState.getBoolean(VID_PLAY));
+            if(mSimplePlayer == null) {
+                Log.d("fart", "onCreate ->> savedInstanceState != null AND mSimplePlayer != null");
+                initPlayer();
             }
         }
 
-//        theVideoHelper.setmThePlayerView(mThePlayerView);
-
-        if(mTheStep != null) {
-            loadFromCurStep();
-        }
+        loadButtons();
     }
-    void loadFromCurStep(){
+
+    void loadButtons() {
         TextView txtDesc = findViewById(R.id.tvStepDescription);
         txtDesc.setText(mTheStep.getTheDescription());
-//            txtDesc.setVisibility(View.VISIBLE);
+
         findViewById(R.id.btnPrevious).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,12 +128,13 @@ public class StepDetailActivity extends AppCompatActivity {
                 switchStepClick(true);
             }
         });
+    }
 
-        //TODO - Now the next and prev buttons aren't showing the video
+    void loadNewVideo(){
         if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
             Log.d("fart", "url = " + mTheStep.getTheVideoURL());
-            theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
-            mSimplePlayer = theVideoHelper.getmSimplePlayer();
+            prepareSimplePlayerWithSource(mTheStep.getTheVideoURL());
+            mSimplePlayer.setPlayWhenReady(false);
             mThePlayerView.setVisibility(View.VISIBLE);
         }
         else
@@ -163,17 +165,15 @@ public class StepDetailActivity extends AppCompatActivity {
                     return;
                 }
             }
-            mSimplePlayer.stop();
+            //pause the player
+            mSimplePlayer.setPlayWhenReady(false);
 
+            //changing data to new step
             mTheStep = loadStep;
-            loadFromCurStep();
-//            Context context = this;
-//            Intent intent = new Intent(context, StepDetailActivity.class);
-//            intent.putExtra(StepDetailActivity.THE_STEPS_ARRAY, mStepsArray);
-//            intent.putExtra(StepsFragment.THE_STEP_ID, loadStep);
-//            intent.putExtra(RecipeListActivity.TWO_PANE, false);
-//            Log.d("fart", "starting new intent");
-//            context.startActivity(intent);
+            //changing buttons
+            loadButtons();
+            //changing video
+            loadNewVideo();
         }
         else
         {
@@ -200,32 +200,36 @@ public class StepDetailActivity extends AppCompatActivity {
         //save stuff here
         outState.putParcelableArrayList(THE_STEPS_ARRAY, mStepsArray);
         outState.putParcelable(StepsFragment.THE_STEP_ID, mTheStep);
-/*
-        if(theVideoHelper != null && theVideoHelper.getmSimplePlayer() != null){
-            mVidPlayPosition = theVideoHelper.getmSimplePlayer().getCurrentPosition();
-            mVidPlayWindow = theVideoHelper.getmSimplePlayer().getCurrentWindowIndex();
-            mVidPlayWhenReady = theVideoHelper.getmSimplePlayer().getPlayWhenReady();
-*/
-            outState.putBoolean(VID_PLAY, mVidPlayWhenReady);
-            outState.putInt(VID_WIND, mVidPlayWindow);
-            outState.putLong(VID_POS, mVidPlayPosition);
-//        }
+
+        outState.putBoolean(VID_PLAY, mVidPlayWhenReady);
+        outState.putInt(VID_WIND, mVidPlayWindow);
+        outState.putLong(VID_POS, mVidPlayPosition);
+        //try mSimplePlayer properties if those don't work
     }
 
-    private void stopAndReleaseVideoHelper(){
-        if(theVideoHelper != null && mSimplePlayer != null) {
-            Log.d("fart", "actually should stop");
-            mVidPlayPosition = mSimplePlayer.getCurrentPosition();
-            mVidPlayWindow = mSimplePlayer.getCurrentWindowIndex();
-            mVidPlayWhenReady = mSimplePlayer.getPlayWhenReady();
-            theVideoHelper.stopAndDestroy(mSimplePlayer);
-            //mSimplePlayer = null;
-            theVideoHelper = null;
-        }
-        else{
-            Log.d("fart", "refusing to STOP");
-        }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d("fart", "instance state restored");
+        mVidPlayPosition = savedInstanceState.getLong(VID_POS);
+        mVidPlayWhenReady = savedInstanceState.getBoolean(VID_PLAY);
+        mVidPlayWindow = savedInstanceState.getInt(VID_WIND);
     }
+
+//    private void stopAndReleaseVideoHelper(){
+//        if(theVideoHelper != null && mSimplePlayer != null) {
+//            Log.d("fart", "actually should stop");
+//            mVidPlayPosition = mSimplePlayer.getCurrentPosition();
+//            mVidPlayWindow = mSimplePlayer.getCurrentWindowIndex();
+//            mVidPlayWhenReady = mSimplePlayer.getPlayWhenReady();
+//            theVideoHelper.stopAndDestroy(mSimplePlayer);
+//            //mSimplePlayer = null;
+//            theVideoHelper = null;
+//        }
+//        else{
+//            Log.d("fart", "refusing to STOP");
+//        }
+//    }
 
     //TODO: each of these implemented to reflect what I saw in tutorials
     @Override
@@ -270,7 +274,7 @@ public class StepDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(Util.SDK_INT <= 23 || theVideoHelper == null){
+        if(Util.SDK_INT <= 23 || mSimplePlayer == null){
             Log.d("fart", "onResume[ initPlayer ]");
 //            if(mTheStep != null && mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
 //                theVideoHelper = new VideoHelper(this,  mThePlayerView, mTheStep.getTheVideoURL());
@@ -285,16 +289,23 @@ public class StepDetailActivity extends AppCompatActivity {
                 new DefaultRenderersFactory(this),
                 new DefaultTrackSelector(), new DefaultLoadControl());
         mThePlayerView.setPlayer(mSimplePlayer);
-        mSimplePlayer.setPlayWhenReady(mVidPlayWhenReady);
+        prepareSimplePlayerWithSource(mTheStep.getTheVideoURL());
         mSimplePlayer.seekTo(mVidPlayWindow, mVidPlayPosition);
+        mSimplePlayer.setPlayWhenReady(mVidPlayWhenReady);
+/*
         Uri videoLink = Uri.parse(mTheStep.getTheVideoURL());
         MediaSource theMediaSource = mediaSourceFromLink(videoLink);
         mSimplePlayer.prepare(theMediaSource, true, false);
-
+*/
+    }
+    private void prepareSimplePlayerWithSource(String theUrlSource){
+        Uri videoLink = Uri.parse(theUrlSource);
+        MediaSource theMediaSource = mediaSourceFromLink(videoLink);
+        mSimplePlayer.prepare(theMediaSource, true, false);
     }
     private MediaSource mediaSourceFromLink(Uri theLink){
         return new ExtractorMediaSource.Factory(
-                new DefaultHttpDataSourceFactory("exoplayer-codelab")).
+                new DefaultHttpDataSourceFactory("com.example.curtis.bakingapp")).
                 createMediaSource(theLink);
     }
 

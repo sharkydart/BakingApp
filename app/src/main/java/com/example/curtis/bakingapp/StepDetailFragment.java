@@ -12,7 +12,16 @@ import android.widget.TextView;
 
 import com.example.curtis.bakingapp.Video.VideoHelper;
 import com.example.curtis.bakingapp.model.Step;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import static com.example.curtis.bakingapp.StepDetailActivity.*;
 
@@ -29,7 +38,14 @@ public class StepDetailFragment extends Fragment {
 
     private Step mTheStep;
     private boolean mTwoPane;
-    VideoHelper theVideoHelper;
+    private final static String VID_PLAY = "vidplaywhenready";
+    private final static String VID_POS = "vidplayposition";
+    private final static String VID_WIND = "vidplaycurrentwindow";
+    boolean mVidPlayWhenReady;
+    long mVidPlayPosition;
+    int mVidPlayWindow;
+    SimpleExoPlayer mSimplePlayer;
+    PlayerView mThePlayerView;
 
 //    private OnSwitchStepsListener mCallback;
 
@@ -61,7 +77,7 @@ public class StepDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
-
+        mThePlayerView = rootView.findViewById(R.id.pvVideo);
         if(mTheStep != null)
         {
             TextView txtDesc = rootView.findViewById(R.id.tvStepDescription);
@@ -69,10 +85,9 @@ public class StepDetailFragment extends Fragment {
             txtDesc.setVisibility(View.VISIBLE);
 
             if(mTheStep.getTheVideoURL() != null && !mTheStep.getTheVideoURL().isEmpty()) {
-                theVideoHelper = new VideoHelper(getContext(), (PlayerView) rootView.findViewById(R.id.pvVideo), mTheStep.getTheVideoURL());
-                theVideoHelper.getVideoInto(mTheStep.getTheVideoURL());
+                initPlayer();
             }else{
-                rootView.findViewById(R.id.pvVideo).setVisibility(View.GONE);
+                mThePlayerView.setVisibility(View.GONE);
             }
 
         }
@@ -108,20 +123,64 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        if(Util.SDK_INT <= 23)
+            releasePlayer();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        if(Util.SDK_INT > 23)
+            releasePlayer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if(Util.SDK_INT <= 23 || mSimplePlayer == null)
+            initPlayer();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        if(Util.SDK_INT >23)
+            initPlayer();
+    }
+
+
+    private void initPlayer(){
+        mSimplePlayer = ExoPlayerFactory.newSimpleInstance(
+                new DefaultRenderersFactory(this.getContext()),
+                new DefaultTrackSelector(), new DefaultLoadControl());
+        mThePlayerView.setPlayer(mSimplePlayer);
+        prepareSimplePlayerWithSource(mTheStep.getTheVideoURL());
+        mSimplePlayer.seekTo(mVidPlayWindow, mVidPlayPosition);
+        mSimplePlayer.setPlayWhenReady(mVidPlayWhenReady);
+/*
+        Uri videoLink = Uri.parse(mTheStep.getTheVideoURL());
+        MediaSource theMediaSource = mediaSourceFromLink(videoLink);
+        mSimplePlayer.prepare(theMediaSource, true, false);
+*/
+    }
+    private void prepareSimplePlayerWithSource(String theUrlSource){
+        Uri videoLink = Uri.parse(theUrlSource);
+        MediaSource theMediaSource = mediaSourceFromLink(videoLink);
+        mSimplePlayer.prepare(theMediaSource, true, false);
+    }
+    private MediaSource mediaSourceFromLink(Uri theLink){
+        return new ExtractorMediaSource.Factory(
+                new DefaultHttpDataSourceFactory("com.example.curtis.bakingapp")).
+                createMediaSource(theLink);
+    }
+
+    private void releasePlayer() {
+        if (mSimplePlayer != null) {
+            mVidPlayPosition = mSimplePlayer.getCurrentPosition();
+            mVidPlayWindow = mSimplePlayer.getCurrentWindowIndex();
+            mVidPlayWhenReady = mSimplePlayer.getPlayWhenReady();
+            mSimplePlayer.release();
+            mSimplePlayer = null;
+        }
     }
 }

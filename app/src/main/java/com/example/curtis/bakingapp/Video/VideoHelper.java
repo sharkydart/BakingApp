@@ -24,6 +24,8 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+/* deprecated - too much gone wrong without explanation. perhaps i just needed a way to make a new MediaSource to load in
+* */
 public class VideoHelper {
     SimpleExoPlayer mSimplePlayer;
     PlayerView mThePlayerView;
