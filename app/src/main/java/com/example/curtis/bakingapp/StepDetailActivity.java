@@ -1,19 +1,13 @@
 package com.example.curtis.bakingapp;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.curtis.bakingapp.Video.VideoHelper;
 import com.example.curtis.bakingapp.model.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -21,14 +15,8 @@ import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
@@ -48,11 +36,6 @@ public class StepDetailActivity extends AppCompatActivity {
     int mVidPlayWindow;
     SimpleExoPlayer mSimplePlayer;
     PlayerView mThePlayerView;
-//    ExtractorMediaSource.Factory mTheMediaFactory;
-//    OnSwitchStepsListener mCallback;
-//    public interface OnSwitchStepsListener{
-//        void OnSwitchStepClick(Step theStep, boolean nextIfTrueBackIfFalse);
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +83,10 @@ public class StepDetailActivity extends AppCompatActivity {
             mVidPlayWhenReady = savedInstanceState.getBoolean(VID_PLAY);
             mVidPlayWindow = savedInstanceState.getInt(VID_WIND);
 
-            if(mSimplePlayer == null) {
-                Log.d("fart", "onCreate ->> savedInstanceState != null AND mSimplePlayer != null");
-                initPlayer();
-            }
+//            if(mSimplePlayer == null) {
+//                Log.d("fart", "onCreate ->> savedInstanceState != null AND mSimplePlayer != null");
+//                initPlayer();
+//            }
         }
 
         loadButtons();
@@ -213,7 +196,6 @@ public class StepDetailActivity extends AppCompatActivity {
         mVidPlayWindow = savedInstanceState.getInt(VID_WIND);
     }
 
-    //TODO: each of these implemented to reflect what I saw in tutorials
     @Override
     protected void onPause() {
         super.onPause();
@@ -265,6 +247,7 @@ public class StepDetailActivity extends AppCompatActivity {
         mSimplePlayer.seekTo(mVidPlayWindow, mVidPlayPosition);
         mSimplePlayer.setPlayWhenReady(mVidPlayWhenReady);
     }
+
     private void prepareSimplePlayerWithSource(String theUrlSource){
         Uri videoLink = Uri.parse(theUrlSource);
         MediaSource theMediaSource = mediaSourceFromLink(videoLink);
@@ -278,6 +261,7 @@ public class StepDetailActivity extends AppCompatActivity {
 
     private void releasePlayer() {
         if (mSimplePlayer != null) {
+            Log.d("fart", "mSimplePlayer == null; saving positions to globals, releasing mSimplePlayer");
             mVidPlayPosition = mSimplePlayer.getCurrentPosition();
             mVidPlayWindow = mSimplePlayer.getCurrentWindowIndex();
             mVidPlayWhenReady = mSimplePlayer.getPlayWhenReady();

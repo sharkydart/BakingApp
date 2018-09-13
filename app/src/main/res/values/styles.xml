@@ -16,7 +16,7 @@
     <style name="AppTheme.NoActionBarDetail">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorAccent">@color/colorDetailCircle</item>
+        <item name="colorAccent">@color/colorBabyPurple</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

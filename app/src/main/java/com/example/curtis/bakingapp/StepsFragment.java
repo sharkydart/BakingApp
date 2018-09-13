@@ -50,7 +50,6 @@ public class StepsFragment extends Fragment {
     public StepsFragment() {
     }
 
-    // TODO: TABLET needs to also have correct function
     @SuppressWarnings("unused")
     public static StepsFragment newInstance(int columnCount) {
         StepsFragment fragment = new StepsFragment();
