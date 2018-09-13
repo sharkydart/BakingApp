@@ -181,6 +181,7 @@ public class StepDetailActivity extends AppCompatActivity {
         Log.d("fart", "onSaveInstanceState");
         outState.putParcelableArrayList(THE_STEPS_ARRAY, mStepsArray);
         outState.putParcelable(StepsFragment.THE_STEP_ID, mTheStep);
+        outState.putBoolean(RecipeListActivity.TWO_PANE, mTwoPane);
 
         outState.putBoolean(VID_PLAY, mVidPlayWhenReady);
         outState.putInt(VID_WIND, mVidPlayWindow);
